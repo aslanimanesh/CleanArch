@@ -12,7 +12,7 @@ namespace MyApp.Domain.Models
         public string LastName { get; set; }
         public int Age { get; set; }
 
-        // Navigation property for Products (many-to-many relationship)
-        public ICollection<Product> Products { get; set; }
+        // Many-to-many relationship with Discount
+        public ICollection<UserDiscount> UserDiscounts { get; set; }
     }
 }

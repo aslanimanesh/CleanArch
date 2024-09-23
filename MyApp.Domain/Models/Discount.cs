@@ -24,8 +24,11 @@ namespace MyApp.Domain.Models
         public bool IsActive => DateTime.Now >= StartDate && DateTime.Now <= EndDate;
 
 
-        // Navigation property for Product (one-to-one relationship)
-        public Product Product { get; set; }
+        // Many-to-many relationship with Product
+        public ICollection<ProductDiscount> ProductDiscounts { get; set; }
+
+        // Many-to-many relationship with User
+        public ICollection<UserDiscount> UserDiscounts { get; set; }
 
     }
 }

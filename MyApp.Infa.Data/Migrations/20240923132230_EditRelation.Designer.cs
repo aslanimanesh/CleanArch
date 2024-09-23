@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MyApp.Infa.Data.Context;
 
@@ -11,9 +12,11 @@ using MyApp.Infa.Data.Context;
 namespace MyApp.Infa.Data.Migrations
 {
     [DbContext(typeof(MyAppDbContext))]
-    partial class MyAppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240923132230_EditRelation")]
+    partial class EditRelation
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,6 +24,36 @@ namespace MyApp.Infa.Data.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+            modelBuilder.Entity("DiscountProduct", b =>
+                {
+                    b.Property<int>("DiscountsId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.HasKey("DiscountsId", "ProductId");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("DiscountProduct");
+                });
+
+            modelBuilder.Entity("DiscountUser", b =>
+                {
+                    b.Property<int>("DiscountsId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("DiscountsId", "UserId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("DiscountUser");
+                });
 
             modelBuilder.Entity("MyApp.Domain.Models.Discount", b =>
                 {
@@ -82,21 +115,6 @@ namespace MyApp.Infa.Data.Migrations
                     b.ToTable("Products");
                 });
 
-            modelBuilder.Entity("MyApp.Domain.Models.ProductDiscount", b =>
-                {
-                    b.Property<int>("ProductId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("DiscountId")
-                        .HasColumnType("int");
-
-                    b.HasKey("ProductId", "DiscountId");
-
-                    b.HasIndex("DiscountId");
-
-                    b.ToTable("ProductDiscounts");
-                });
-
             modelBuilder.Entity("MyApp.Domain.Models.User", b =>
                 {
                     b.Property<int>("Id")
@@ -123,74 +141,34 @@ namespace MyApp.Infa.Data.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("MyApp.Domain.Models.UserDiscount", b =>
+            modelBuilder.Entity("DiscountProduct", b =>
                 {
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("DiscountId")
-                        .HasColumnType("int");
-
-                    b.HasKey("UserId", "DiscountId");
-
-                    b.HasIndex("DiscountId");
-
-                    b.ToTable("UserDiscounts");
-                });
-
-            modelBuilder.Entity("MyApp.Domain.Models.ProductDiscount", b =>
-                {
-                    b.HasOne("MyApp.Domain.Models.Discount", "Discount")
-                        .WithMany("ProductDiscounts")
-                        .HasForeignKey("DiscountId")
+                    b.HasOne("MyApp.Domain.Models.Discount", null)
+                        .WithMany()
+                        .HasForeignKey("DiscountsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("MyApp.Domain.Models.Product", "Product")
-                        .WithMany("ProductDiscounts")
+                    b.HasOne("MyApp.Domain.Models.Product", null)
+                        .WithMany()
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Discount");
-
-                    b.Navigation("Product");
                 });
 
-            modelBuilder.Entity("MyApp.Domain.Models.UserDiscount", b =>
+            modelBuilder.Entity("DiscountUser", b =>
                 {
-                    b.HasOne("MyApp.Domain.Models.Discount", "Discount")
-                        .WithMany("UserDiscounts")
-                        .HasForeignKey("DiscountId")
+                    b.HasOne("MyApp.Domain.Models.Discount", null)
+                        .WithMany()
+                        .HasForeignKey("DiscountsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("MyApp.Domain.Models.User", "User")
-                        .WithMany("UserDiscounts")
+                    b.HasOne("MyApp.Domain.Models.User", null)
+                        .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Discount");
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("MyApp.Domain.Models.Discount", b =>
-                {
-                    b.Navigation("ProductDiscounts");
-
-                    b.Navigation("UserDiscounts");
-                });
-
-            modelBuilder.Entity("MyApp.Domain.Models.Product", b =>
-                {
-                    b.Navigation("ProductDiscounts");
-                });
-
-            modelBuilder.Entity("MyApp.Domain.Models.User", b =>
-                {
-                    b.Navigation("UserDiscounts");
                 });
 #pragma warning restore 612, 618
         }

@@ -18,13 +18,10 @@ namespace MyApp.Domain.Models
         [Required]
         public string ImageName { get; set; }
 
-        // Navigation property for Discount (one-to-one relationship)
-        public Discount Discount { get; set; }
 
-        // Navigation property for Users (many-to-many relationship)
-        public ICollection<User> Users { get; set; }
+        // Many-to-many relationship with Discount
+        public ICollection<ProductDiscount> ProductDiscounts { get; set; }
     }
-    //محصول و یوزر 
-    // تخفیف و یوزر
+    
 
 }
