@@ -11,5 +11,8 @@ namespace MyApp.Domain.Models
         [MaxLength(100)]
         public string LastName { get; set; }
         public int Age { get; set; }
+
+        // Navigation property for Products (many-to-many relationship)
+        public ICollection<Product> Products { get; set; }
     }
 }
