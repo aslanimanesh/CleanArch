@@ -1,0 +1,90 @@
+﻿@using MyApp.Domain.ViewModels
+@model FilterUserViewModel
+
+@{
+    ViewData["Title"] = "لیست کاربران";
+}
+
+<div class="row clearfix">
+    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 mb-4">
+        <div class="card">
+            <div class="header">
+                <h2>
+                    فیلتر ها
+                </h2>
+            </div>
+            <div class="body">
+                <form method="get" asp-action="Index" id="filter-search">
+                    <input type="hidden" asp-for="Page" />
+                    <div class="row clearfix">
+                        <div class="col-sm-12 col-md-4">
+                            <div class="form-group form-float">
+                                <div class="form-line">
+                                    <label class="form-label" asp-for="FirstName"></label>
+                                    <input type="text" class="form-control" asp-for="FirstName">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-12 col-md-4">
+                            <div class="form-group form-float">
+                                <div class="form-line">
+                                    <label class="form-label" asp-for="LastName"></label>
+                                    <input type="text" class="form-control" asp-for="LastName">
+                                    
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-12">
+                            <button class="btn btn-success">جستجو</button>
+                            <a asp-action="Create" class="btn btn-primary">ساخت کاربر جدید</a> <!-- دکمه ساخت کاربر جدید -->
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+        <div class="card">
+            <div class="header">
+                <h2>
+                    @ViewData["Title"]
+                </h2>
+            </div>
+            <div class="body table-responsive">
+                @if (Model != null && Model.Entities != null && Model.Entities.Any())
+                {
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>آیدی</th>
+                                <th>نام</th>
+                                <th>نام خانوادگی</th>
+                                <th>سن</th>
+                                <th>عملیات</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var user in Model.Entities)
+                            {
+                                <tr>
+                                    <th scope="row">@user.Id</th>
+                                    <td>@user.FirstName</td>
+                                    <td>@user.LastName</td>
+                                    <td>@user.Age</td>
+                                    <td>
+                                        <a asp-action="Details" asp-route-id="@user.Id" class="btn btn-info">Details</a>
+                                        <a asp-action="Edit" asp-route-id="@user.Id" class="btn btn-warning">Edit</a>
+                                        <a asp-action="Delete" asp-route-id="@user.Id" class="btn btn-danger">Delete</a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+
+                    <partial name="_Pagination" model="@Model.GetCurrentPaging()" />
+                }
+
+            </div>
+        </div>
+    </div>
+</div>
