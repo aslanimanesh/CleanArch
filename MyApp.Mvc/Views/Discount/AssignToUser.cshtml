@@ -1,0 +1,35 @@
+﻿@model MyApp.Domain.ViewModels.AssignDiscount.AssignDiscountToUserViewModel
+
+@{
+    ViewData["Title"] = "Assign Discount to Users";
+}
+
+<h2>Assign Discount to Users</h2>
+
+<form asp-action="AssignToUser" method="post">
+    <input type="hidden" asp-for="DiscountId" />
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Select</th>
+                <th>User Name</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var user in Model.Users)
+            {
+                <tr>
+                    <td>
+                        <input type="checkbox" name="UserIds" value="@user.Id" />
+                    </td>
+                    <td>
+                        @user.FirstName
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <button type="submit" class="btn btn-primary">Assign Discount</button>
+</form>
+
+<a href="@Url.Action("Index", "Discount")" class="btn btn-secondary">Back to Discounts</a>

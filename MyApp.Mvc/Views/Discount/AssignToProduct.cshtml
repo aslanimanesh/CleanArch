@@ -1,0 +1,31 @@
+﻿@model MyApp.Domain.ViewModels.AssignDiscount.AssignDiscountToProductViewModel
+
+<h2>Assign Discount to Products</h2>
+
+
+<form asp-action="AssignToProduct" method="post">
+    <input type="hidden" asp-for="DiscountId" />
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Select</th>
+                <th>Product Name</th> 
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var product in Model.Products) 
+            {
+                <tr>
+                    <td>
+                        <input type="checkbox" name="ProductIds" value="@product.Id" />
+                    </td>
+                    <td>
+                        @product.Title
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <button type="submit" class="btn btn-primary">Assign Discount</button>
+</form>
+<a href="@Url.Action("Index", "Discount")" class="btn btn-secondary">Back to Discounts</a>

@@ -25,7 +25,7 @@
                 <td>@product.Title</td>
                 <td>@product.Description</td>
                 <td>@product.Price</td>
-                <td><img src="@product.ImageName" alt="@product.Title" width="100" /></td>
+                <td> <img src="~/images/@product.ImageName" alt="@product.Title" style="width:200px;" /></td>
                 <td>
                     <a href="@Url.Action("Details", "Product", new { id = product.Id })" class="btn btn-info">Details</a>
                     <a href="@Url.Action("Edit", "Product", new { id = product.Id })" class="btn btn-warning">Edit</a>

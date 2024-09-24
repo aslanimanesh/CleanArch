@@ -141,5 +141,7 @@ namespace MyApp.Mvc.Controllers
             TempData["SuccessMessage"] = "Product deleted successfully.";
             return RedirectToAction(nameof(Index));
         }
+
+
     }
 }

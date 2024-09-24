@@ -2,6 +2,7 @@
 using MyApp.Domain.Interfaces;
 using MyApp.Domain.Models;
 using MyApp.Infa.Data.Context;
+using System.Linq.Expressions;
 
 namespace MyApp.Infa.Data.Repositories
 {
@@ -14,11 +15,9 @@ namespace MyApp.Infa.Data.Repositories
             _dbContext = dbContext;
         }
 
-        public async Task<List<ProductDiscount>> GetDiscountsByProductIdAsync(int productId)
+        public async Task<ProductDiscount> GetAsync(Expression<Func<ProductDiscount, bool>> predicate)
         {
-            return await _dbContext.Set<ProductDiscount>()
-                .Where(pd => pd.ProductId == productId)
-                .ToListAsync();
+            return await _dbContext.ProductDiscounts.FirstOrDefaultAsync(predicate);
         }
     }
 }

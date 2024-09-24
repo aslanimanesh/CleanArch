@@ -6,6 +6,13 @@
 
 <h2>Discounts List</h2>
 
+@if (TempData["AlertMessage"] != null)
+{
+    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+        @TempData["AlertMessage"]
+    </div>
+}
+
 <table class="table">
     <thead>
         <tr>
@@ -30,6 +37,8 @@
                     <a href="@Url.Action("Details", "Discount", new { id = discount.Id })" class="btn btn-info">Details</a>
                     <a href="@Url.Action("Edit", "Discount", new { id = discount.Id })" class="btn btn-warning">Edit</a>
                     <a href="@Url.Action("Delete", "Discount", new { id = discount.Id })" class="btn btn-danger">Delete</a>
+                    <a href="@Url.Action("AssignToProduct", "Discount", new { id = discount.Id })" class="btn btn-primary">AssignToProduct</a>
+                    <a href="@Url.Action("AssignToUser", "Discount", new { id = discount.Id })" class="btn btn-success">AssignToUser</a>
                 </td>
             </tr>
         }

@@ -1,17 +1,30 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MyApp.Application.Interfaces;
 using MyApp.Domain.Models;
+using MyApp.Domain.ViewModels;
+using MyApp.Domain.ViewModels.AssignDiscount;
 using MyApp.Domain.ViewModels.Discounts;
+using MyApp.Domain.ViewModels.Products;
 
 namespace MyApp.Mvc.Controllers
 {
     public class DiscountController : Controller
     {
         private readonly IDiscountService _discountService;
+        private readonly IProductService _productService;
+        private readonly IUserService _userService;
+        private readonly IDiscountAssignmentToProductService _discountAssignmentToProductService;
+        private readonly IDiscountAssignmentToUserService _discountAssignmentToUserService;
 
-        public DiscountController(IDiscountService discountService)
+        public DiscountController(IDiscountService discountService , IProductService productService ,IUserService userService,
+            IDiscountAssignmentToProductService discountAssignmentToProductService , IDiscountAssignmentToUserService discountAssignmentToUserService
+            )
         {
             _discountService = discountService;
+            _productService = productService;
+            _userService = userService;
+            _discountAssignmentToProductService = discountAssignmentToProductService;
+            _discountAssignmentToUserService = discountAssignmentToUserService;
         }
 
         // GET: DiscountController
@@ -148,5 +161,137 @@ namespace MyApp.Mvc.Controllers
 
             return RedirectToAction(nameof(Index));
         }
+
+        // GET: DiscountController/AssignToProduct/5
+        public async Task<ActionResult> AssignToProduct(int id)
+        {
+            var products = await _productService.GetAllAsync();
+            var viewModel = new AssignDiscountToProductViewModel
+            {
+                DiscountId = id,
+                Products = products.Select(product => new ProductViewModel
+                {
+                    Id = product.Id,
+                    Title = product.Title
+                }).ToList()
+            };
+
+            return View(viewModel);
+        }
+
+
+        [HttpPost]
+        public async Task<IActionResult> AssignToProduct(AssignDiscountToProductViewModel model)
+        {
+            bool hasDuplicateDiscounts = false; 
+
+            if (ModelState.IsValid)
+            {
+                foreach (var productId in model.ProductIds)
+                {
+                    var existingDiscount = await _discountAssignmentToProductService.GetProductDiscountAsync(productId, model.DiscountId);
+                    if (existingDiscount == null)
+                    {
+                        await _discountAssignmentToProductService.AddAsync(new ProductDiscount
+                        {
+                            ProductId = productId,
+                            DiscountId = model.DiscountId
+                        });
+                    }
+                    else
+                    {
+                        hasDuplicateDiscounts = true;
+                    }
+                }
+
+                if (!hasDuplicateDiscounts)
+                {
+                    TempData["AlertMessage"] = "تخفیف با موفقیت به محصولات اختصاص یافت";
+                    return RedirectToAction("Index", "Discount");
+                }
+                else
+                {
+                    TempData["AlertMessage"] = $"تخفیف تکراری است";
+                    return RedirectToAction("Index", "Discount");
+                }
+
+            }
+
+            var products = await _productService.GetAllAsync();
+            model.Products = products.Select(product => new ProductViewModel
+            {
+                Id = product.Id,
+                Title = product.Title
+            }).ToList();
+
+            return View(model);
+        }
+
+        // GET: DiscountController/AssignToUser/5
+        public async Task<ActionResult> AssignToUser(int id)
+        {
+            var users = await _userService.GetAllAsync(); 
+            var viewModel = new AssignDiscountToUserViewModel
+            {
+                DiscountId = id,
+                Users = users.Select(user => new UserViewModel
+                {
+                    Id = user.Id,
+                    FirstName = user.FirstName,
+                    LastName = user.LastName,
+                }).ToList()
+            };
+
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AssignToUser(AssignDiscountToUserViewModel model)
+        {
+            bool hasDuplicateDiscounts = false;
+
+            if (ModelState.IsValid)
+            {
+                foreach (var userId in model.UserIds)
+                {
+                    var existingDiscount = await _discountAssignmentToUserService.GetUserDiscountAsync(userId, model.DiscountId);
+                    if (existingDiscount == null)
+                    {
+                        await _discountAssignmentToUserService.AddAsync(new UserDiscount
+                        {
+                            UserId = userId,
+                            DiscountId = model.DiscountId
+                        });
+                    }
+                    else
+                    {
+                        hasDuplicateDiscounts = true;
+                    }
+                }
+
+                if (!hasDuplicateDiscounts)
+                {
+                    TempData["AlertMessage"] = "تخفیف با موفقیت به کاربران اختصاص یافت";
+                    return RedirectToAction("Index", "Discount");
+                }
+                else
+                {
+                    TempData["AlertMessage"] = $"تخفیف تکراری است";
+                    return RedirectToAction("Index", "Discount");
+                }
+            }
+
+            var users = await _userService.GetAllAsync();
+            model.Users = users.Select(user => new UserViewModel
+            {
+                Id = user.Id,
+                FirstName = user.FirstName,
+                LastName = user.LastName
+            }).ToList();
+
+            return View(model);
+        }
+
+
     }
 }
