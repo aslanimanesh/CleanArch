@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MyApp.Application.Interfaces;
+using MyApp.Domain.Models;
+using MyApp.Domain.ViewModels.Discounts;
 
 namespace MyApp.Mvc.Controllers
 {
@@ -11,80 +13,140 @@ namespace MyApp.Mvc.Controllers
         {
             _discountService = discountService;
         }
-        // GET: DiscountController
-        public ActionResult Index()
-        {
 
-            return View();
+        // GET: DiscountController
+        public async Task<ActionResult> Index()
+        {
+            var discounts = await _discountService.GetAllAsync();
+            var discountViewModels = discounts.Select(discount => new DiscountViewModel
+            {
+                Id = discount.Id,
+                DiscountPercentage = discount.DiscountPercentage,
+                DiscountCode = discount.DiscountCode,
+                StartDate = discount.StartDate,
+                EndDate = discount.EndDate,
+                IsActive = discount.IsActive,
+
+            }).ToList();
+
+            return View(discountViewModels);
         }
 
         // GET: DiscountController/Details/5
-        public ActionResult Details(int id)
+        public async Task<ActionResult> Details(int id)
         {
-            return View();
+            var discount = await _discountService.GetByIdAsync(id);
+            if (discount == null)
+            {
+                return NotFound();
+            }
+
+            var viewModel = new DiscountViewModel
+            {
+                Id = discount.Id,
+                DiscountPercentage = discount.DiscountPercentage,
+                DiscountCode = discount.DiscountCode,
+                StartDate = discount.StartDate,
+                EndDate = discount.EndDate,
+                IsActive= discount.IsActive,
+            };
+
+            return View(viewModel);
         }
 
         // GET: DiscountController/Create
-        public ActionResult Create()
+        public IActionResult Create()
         {
-            return View();
+            var viewModel = new CreateDiscountViewModel();
+            return View(viewModel);
         }
 
-        // POST: DiscountController/Create
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
+        public async Task<IActionResult> Create(CreateDiscountViewModel viewModel)
         {
-            try
+            if (ModelState.IsValid)
             {
+                var discount = new Discount
+                {
+                    DiscountPercentage = viewModel.DiscountPercentage,
+                    DiscountCode = viewModel.DiscountCode,
+                    StartDate = viewModel.StartDate,
+                    EndDate = viewModel.EndDate,
+                    IsActive = viewModel.IsActive,
+
+                };
+
+                await _discountService.AddAsync(discount);
                 return RedirectToAction(nameof(Index));
             }
-            catch
-            {
-                return View();
-            }
+
+            return View(viewModel);
         }
 
         // GET: DiscountController/Edit/5
-        public ActionResult Edit(int id)
+        public async Task<ActionResult> Edit(int id)
         {
-            return View();
+            var discount = await _discountService.GetByIdAsync(id);
+            if (discount == null)
+            {
+                return NotFound();
+            }
+
+            var viewModel = new EditDiscountViewModel
+            {
+                Id = discount.Id,
+                DiscountPercentage = discount.DiscountPercentage,
+                DiscountCode = discount.DiscountCode,
+                StartDate = discount.StartDate,
+                EndDate = discount.EndDate,
+                IsActive = discount.IsActive,
+                
+            };
+
+            return View(viewModel);
         }
 
-        // POST: DiscountController/Edit/5
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        public async Task<IActionResult> Edit(EditDiscountViewModel viewModel)
         {
-            try
+            if (ModelState.IsValid)
             {
+                var discount = new Discount
+                {
+                    Id = viewModel.Id,
+                    DiscountPercentage = viewModel.DiscountPercentage,
+                    DiscountCode = viewModel.DiscountCode,
+                    StartDate = viewModel.StartDate,
+                    EndDate = viewModel.EndDate,
+                    IsActive = viewModel.IsActive,
+                };
+
+                await _discountService.UpdateAsync(discount);
                 return RedirectToAction(nameof(Index));
             }
-            catch
-            {
-                return View();
-            }
+
+            return View(viewModel);
         }
 
         // GET: DiscountController/Delete/5
-        public ActionResult Delete(int id)
+        public async Task<ActionResult> Delete(int id)
         {
-            return View();
+            var discount = await _discountService.GetByIdAsync(id);
+            if (discount == null)
+            {
+                return NotFound();
+            }
+            return View(discount);
         }
 
         // POST: DiscountController/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
+        public async Task<ActionResult> DeleteConfirmed(int id)
         {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
+            await _discountService.DeleteAsync(id); 
+
+            return RedirectToAction(nameof(Index));
         }
     }
 }

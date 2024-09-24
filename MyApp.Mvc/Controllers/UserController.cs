@@ -2,6 +2,7 @@
 using MyApp.Application.Interfaces;
 using MyApp.Domain.Models;
 using MyApp.Domain.ViewModels;
+using System.Threading.Tasks;
 
 namespace MyApp.Mvc.Controllers
 {
@@ -13,32 +14,36 @@ namespace MyApp.Mvc.Controllers
         {
             _userService = userService;
         }
+
         // GET: UserController
         public async Task<ActionResult> Index(FilterUserViewModel filter)
         {
             var result = await _userService.FilterAsync(filter);
-            return View(result); 
+            return View(result);
         }
 
         // GET: UserController/Details/5
-        public ActionResult Details(int id)
+        public async Task<ActionResult> Details(int id)
         {
-            User user = _userService.GetUserById(id);
-            if(user==null)
+            var user = await _userService.GetByIdAsync(id);
+            if (user == null)
             {
                 return NotFound();
             }
             return View(user);
         }
 
+        // GET: UserController/Create
         public IActionResult Create()
         {
-            var viewModel = new CreateUserViewModel(); 
+            var viewModel = new CreateUserViewModel();
             return View(viewModel);
         }
 
+        // POST: UserController/Create
         [HttpPost]
-        public IActionResult Create(CreateUserViewModel viewModel) 
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create(CreateUserViewModel viewModel)
         {
             if (ModelState.IsValid)
             {
@@ -49,22 +54,21 @@ namespace MyApp.Mvc.Controllers
                     Age = viewModel.Age
                 };
 
-                _userService.CreateUser(user); 
-                return RedirectToAction("Index"); 
+                await _userService.AddAsync(user); 
+                return RedirectToAction("Index");
             }
 
-            return View(viewModel); 
+            return View(viewModel);
         }
 
-
-        public IActionResult Edit(int id)
+        // GET: UserController/Edit/5
+        public async Task<IActionResult> Edit(int id)
         {
-            var user = _userService.GetUserById(id);
+            var user = await _userService.GetByIdAsync(id);
 
-          
             if (user == null)
             {
-                return NotFound(); 
+                return NotFound();
             }
 
             var viewModel = new EditUserViewModel
@@ -78,32 +82,32 @@ namespace MyApp.Mvc.Controllers
             return View(viewModel);
         }
 
+        // POST: UserController/Edit/5
         [HttpPost]
-        public IActionResult Edit(EditUserViewModel viewModel) 
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(EditUserViewModel viewModel)
         {
             if (ModelState.IsValid)
             {
                 var user = new User
                 {
-                    Id = viewModel.Id, 
+                    Id = viewModel.Id,
                     FirstName = viewModel.FirstName,
                     LastName = viewModel.LastName,
                     Age = viewModel.Age
                 };
 
-                _userService.UpdateUser(user);
+                await _userService.UpdateAsync(user); 
                 return RedirectToAction("Index");
             }
 
-            return View(viewModel); 
+            return View(viewModel);
         }
 
-
-
         // GET: UserController/Delete/5
-        public ActionResult Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
-            User user = _userService.GetUserById(id);
+            var user = await _userService.GetByIdAsync(id);
             if (user == null)
             {
                 return NotFound();
@@ -114,20 +118,10 @@ namespace MyApp.Mvc.Controllers
         // POST: UserController/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            bool result = _userService.DeleteUser(id);
-            if (result)
-            {
-                return RedirectToAction(nameof(Index));
-            }
-
-            TempData["ErrorMessage"] = "Unable to delete user.";
+            await _userService.DeleteAsync(id); 
             return RedirectToAction(nameof(Index));
         }
-
-
-
-
     }
 }

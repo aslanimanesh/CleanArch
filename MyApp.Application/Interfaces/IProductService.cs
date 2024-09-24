@@ -1,14 +1,9 @@
-﻿using MyApp.Domain.ViewModels.Products;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using MyApp.Domain.Models;
 
 namespace MyApp.Application.Interfaces
 {
-    public interface IProductService
+    public interface IProductService : IGenericService<Product>
     {
-        ProductViewModel GetProducts();
+       
     }
 }

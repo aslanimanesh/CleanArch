@@ -3,13 +3,8 @@ using MyApp.Domain.ViewModels;
 
 namespace MyApp.Application.Interfaces
 {
-    public interface IUserService
+    public interface IUserService : IGenericService<User>
     {
-        UserViewModel GetUsers();
-        User GetUserById(int UserId);
-        bool CreateUser(User user);        
-        bool UpdateUser(User user);       
-        bool DeleteUser(int UserId);
         Task<FilterUserViewModel> FilterAsync(FilterUserViewModel model);
     }
 }

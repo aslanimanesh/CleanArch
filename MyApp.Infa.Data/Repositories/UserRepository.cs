@@ -5,51 +5,13 @@ using MyApp.Infa.Data.Context;
 
 namespace MyApp.Infa.Data.Repositories
 {
-    public class UserRepository : IUserRepository
+    public class UserRepository : GenericRepository<User>, IUserRepository
     {
         private readonly MyAppDbContext _dbContext;
 
-        public UserRepository(MyAppDbContext dbContext)
+        public UserRepository(MyAppDbContext dbContext) : base(dbContext)
         {
             _dbContext = dbContext;
-        }
-
-        public IEnumerable<User> GetUsers()
-        {
-            return _dbContext.Users;
-        }
-
-        public User GetUserById(int UserId)
-        {
-            return _dbContext.Users.Find(UserId);
-        }
-
-        public bool CreateUser(User user)
-        {
-            _dbContext.Users.Add(user);
-            return Save();
-        }
-
-        public bool UpdateUser(User user)
-        {
-            _dbContext.Users.Update(user);
-            return Save();
-        }
-
-        public bool DeleteUser(int UserId)
-        {
-            var user = _dbContext.Users.Find(UserId);
-            if (user != null)
-            {
-                _dbContext.Users.Remove(user);
-                return Save();
-            }
-            return false;
-        }
-
-        private bool Save()
-        {
-            return _dbContext.SaveChanges() > 0;
         }
 
         public async Task<FilterUserViewModel> FilterAsync(FilterUserViewModel model)

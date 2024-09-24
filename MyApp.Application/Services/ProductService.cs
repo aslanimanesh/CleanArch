@@ -1,23 +1,18 @@
 ﻿using MyApp.Application.Interfaces;
 using MyApp.Domain.Interfaces;
-using MyApp.Domain.ViewModels.Products;
+using MyApp.Domain.Models;
 
 namespace MyApp.Application.Services
 {
-    public class ProductService : IProductService
+    public class ProductService : GenericService<Product>, IProductService
     {
         private readonly IProductRepository _productRepository;
 
-        public ProductService(IProductRepository productRepository)
+        public ProductService(IProductRepository productRepository) : base(productRepository)
         {
-           _productRepository = productRepository;
-        }
-        public ProductViewModel GetProducts()
-        {
-            return new ProductViewModel()
-            {
-                Products = _productRepository.GetProduct()
-            };
+            _productRepository = productRepository;
         }
     }
+
+
 }

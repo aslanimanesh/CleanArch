@@ -15,13 +15,10 @@ namespace MyApp.Domain.Models
         public DateTime EndDate { get; set; }
 
         [Required]
-        public int ProductId { get; set; }
-
-        [Required]
         [StringLength(100)]
         public string DiscountCode { get; set; }
 
-        public bool IsActive => DateTime.Now >= StartDate && DateTime.Now <= EndDate;
+        public bool IsActive { get; set; } 
 
 
         // Many-to-many relationship with Product

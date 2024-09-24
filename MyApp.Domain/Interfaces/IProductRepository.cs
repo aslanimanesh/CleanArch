@@ -2,8 +2,7 @@
 
 namespace MyApp.Domain.Interfaces
 {
-    public interface IProductRepository
+    public interface IProductRepository : IGenericRepository<Product>
     {
-        IEnumerable<Product> GetProduct();
     }
 }

@@ -13,11 +13,17 @@ namespace MyApp.Infra.Ioc
             //Application Layer
 
             services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IProductService, ProductService>();
+            services.AddScoped<IDiscountService, DiscoutService>();
+            services.AddScoped<IDiscountAssignmentService, DiscountAssignmentService>();
 
 
             //Infra Data Layer
 
             services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IProductRepository, ProductRepository>();
+            services.AddScoped<IDiscountRepository, DiscountRepository>();
+            services.AddScoped<IProductDiscountRepository, ProductDiscountRepository>();
 
         }
     }

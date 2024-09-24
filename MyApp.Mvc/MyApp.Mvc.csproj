@@ -20,8 +20,4 @@
     <ProjectReference Include="..\MyApp.Infra.Ioc\MyApp.Infra.Ioc.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Views\Product\" />
-  </ItemGroup>
-
 </Project>
