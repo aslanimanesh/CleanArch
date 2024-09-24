@@ -19,5 +19,13 @@ namespace MyApp.Infa.Data.Repositories
         {
             return await _dbContext.ProductDiscounts.FirstOrDefaultAsync(predicate);
         }
+
+        public async Task<List<ProductDiscount>> GetDiscountsForProductAsync(int productId)
+        {
+            return await _dbContext.ProductDiscounts
+           .Where(pd => pd.ProductId == productId)
+           .Include(pd => pd.Discount) 
+           .ToListAsync();
+        }
     }
 }
