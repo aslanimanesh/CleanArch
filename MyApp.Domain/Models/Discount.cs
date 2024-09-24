@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.CodeAnalysis;
 
 namespace MyApp.Domain.Models
 {
@@ -7,14 +8,11 @@ namespace MyApp.Domain.Models
         [Required]
         [Range(0, 100)]
         public decimal DiscountPercentage { get; set; }
-
-        [Required]
+        [AllowNull]
         public DateTime StartDate { get; set; }
-
-        [Required]
+        [AllowNull]
         public DateTime EndDate { get; set; }
-
-        [Required]
+        [AllowNull]
         [StringLength(100)]
         public string DiscountCode { get; set; }
 

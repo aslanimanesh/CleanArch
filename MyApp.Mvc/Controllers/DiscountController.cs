@@ -77,7 +77,7 @@ namespace MyApp.Mvc.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(CreateDiscountViewModel viewModel)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
                 var discount = new Discount
                 {
