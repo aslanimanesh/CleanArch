@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
+using MyApp.Domain.Models.Common;
 
 namespace MyApp.Domain.Models
 {

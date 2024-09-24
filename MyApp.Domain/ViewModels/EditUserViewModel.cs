@@ -1,4 +1,4 @@
-﻿using MyApp.Domain.Models;
+﻿using MyApp.Domain.Models.Common;
 using System.ComponentModel.DataAnnotations;
 
 namespace MyApp.Domain.ViewModels

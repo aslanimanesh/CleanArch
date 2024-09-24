@@ -19,13 +19,11 @@ namespace MyApp.Infra.Ioc
             services.AddScoped<IDiscountAssignmentToUserService, DiscountAssignmentToUserService>();
 
 
-
             //Infra Data Layer
 
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IProductRepository, ProductRepository>();
             services.AddScoped<IDiscountRepository, DiscountRepository>();
-            services.AddScoped<IProductDiscountRepository, ProductDiscountRepository>();
             services.AddScoped<IProductDiscountRepository, ProductDiscountRepository>();
             services.AddScoped<IUserDiscountRepository, UserDiscountRepository>();
 
