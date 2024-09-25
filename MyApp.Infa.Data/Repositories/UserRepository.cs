@@ -1,6 +1,7 @@
 ﻿using MyApp.Domain.Interfaces;
 using MyApp.Domain.Models;
 using MyApp.Domain.ViewModels;
+using MyApp.Domain.ViewModels.Users;
 using MyApp.Infa.Data.Context;
 
 namespace MyApp.Infa.Data.Repositories
@@ -36,11 +37,28 @@ namespace MyApp.Infa.Data.Repositories
                 Id = user.Id,
                 FirstName = user.FirstName,
                 LastName = user.LastName,
-                Age = user.Age
+                
             }));
             #endregion
 
             return model;
+        }
+
+        public async Task<bool> IsExistEmail(string email)
+        {
+            return _dbContext.Users.Any(u => u.Email == email);
+        }
+
+        public async Task<bool> IsExistUserName(string userName)
+        {
+            return _dbContext.Users.Any(u => u.UserName == userName);
+        }
+
+        public async Task<User> LoginUser(LoginViewModel login)
+        {
+            string Password = login.Password.Trim();
+            string email = login.Email.Trim().ToLower();
+            return _dbContext.Users.SingleOrDefault(u => u.Email == email && u.Password == Password);
         }
     }
 }

@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using MyApp.Application.Interfaces;
 using MyApp.Domain.Interfaces;
 using MyApp.Domain.ViewModels.Products;
+using System.Security.Claims;
 
 namespace MyApp.Mvc.Controllers
 {
@@ -21,7 +22,12 @@ namespace MyApp.Mvc.Controllers
 
         public async Task<IActionResult> Index()
         {
-            int? userId = GetLoggedInUserId();
+            string userIdStr = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            int? userId = null;
+            if (int.TryParse(userIdStr, out int parsedUserId))
+            {
+                userId = parsedUserId;
+            }
 
             var products = await _productService.GetAllAsync();
 
@@ -34,13 +40,14 @@ namespace MyApp.Mvc.Controllers
 
                 var productDiscounts = await _productDiscountRepository.GetDiscountsForProductAsync(product.Id);
 
-                if (!userId.HasValue)
+                if (userId.HasValue)
                 {
                     var userDiscounts = await _userDiscountRepository.GetDiscountsForUserAsync(userId.Value);
                     foreach (var productDiscount in productDiscounts)
                     {
                         if (userDiscounts.Any(ud => ud.DiscountId == productDiscount.DiscountId))
                         {
+                            discountPercentage = productDiscount.Discount.DiscountPercentage;
                             finalPrice *= (1 - (productDiscount.Discount.DiscountPercentage / 100));
                         }
                     }
@@ -65,12 +72,6 @@ namespace MyApp.Mvc.Controllers
             }
 
             return View(productViewModels);
-        }
-
-        public int? GetLoggedInUserId()
-        {
-            //return HttpContext.User.Identity.IsAuthenticated ? GetUserIdFromClaims() : null;
-            return 1;
         }
 
     }

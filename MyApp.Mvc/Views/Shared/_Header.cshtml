@@ -33,6 +33,25 @@
             </div>
             <div class="page-header--top-left">
                 <ul class="nav nav-light justify-content-end">
+
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        <li class="nav-item">
+                            <span class="nav-link">سلام، @User.Identity.Name</span>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/Logout">خروج</a>
+                        </li>
+                    }
+                    else
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link" href="/Register">ثبت نام</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/Login">ورود</a>
+                        </li>
+                    }
                     <li class="nav-item">
                         <a class="nav-link" href="#">وبلاگ</a>
                     </li>

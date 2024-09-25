@@ -51,7 +51,7 @@ namespace MyApp.Mvc.Areas.Admin.Controllers
                 {
                     FirstName = viewModel.FirstName,
                     LastName = viewModel.LastName,
-                    Age = viewModel.Age
+                  
                 };
 
                 await _userService.AddAsync(user);
@@ -76,7 +76,7 @@ namespace MyApp.Mvc.Areas.Admin.Controllers
                 Id = user.Id,
                 FirstName = user.FirstName,
                 LastName = user.LastName,
-                Age = user.Age
+                
             };
 
             return View(viewModel);
@@ -94,7 +94,7 @@ namespace MyApp.Mvc.Areas.Admin.Controllers
                     Id = viewModel.Id,
                     FirstName = viewModel.FirstName,
                     LastName = viewModel.LastName,
-                    Age = viewModel.Age
+                   
                 };
 
                 await _userService.UpdateAsync(user);

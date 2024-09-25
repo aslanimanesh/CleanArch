@@ -1,0 +1,74 @@
+﻿@model MyApp.Domain.ViewModels.Users.RegisterViewModel
+
+@{
+    ViewData["Title"] = "ثبت نام";
+}
+
+<main class="page-content page-auth">
+    <!-- start of auth-container -->
+    <div class="auth-container">
+        <div class="auth-title mb-3"> ثبت نام</div>
+        <!-- start of auth-box -->
+        <div class="auth-box ui-box">
+            <!-- start of auth-form -->
+            <form asp-action="Register">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <!-- start of form-element -->
+
+                <div class="form-element-row mb-5">
+                    <input type="text" asp-for="FirstName" class="form-control" placeholder="نام">
+                    <span asp-validation-for="FirstName" class="text-danger"></span>
+                </div>
+                <div class="form-element-row mb-5">
+                    <input type="text" asp-for="LastName" class="form-control" placeholder="نام خانوادگی">
+                    <span asp-validation-for="LastName" class="text-danger"></span>
+                </div>
+                <div class="form-element-row mb-5">
+                    <input type="text" asp-for="UserName" class="form-control" placeholder="نام کاربری">
+                    <span asp-validation-for="UserName" class="text-danger"></span>
+                </div>
+                <div class="form-element-row mb-5">
+                    <input type="text" asp-for="Email" class="form-control" placeholder="ایمیل">
+                    <span asp-validation-for="Email" class="text-danger"></span>
+                </div>
+                <div class="form-element-row mb-5">
+                    <input type="text" asp-for="Password" class="form-control" placeholder="رمز عبور">
+                    <span asp-validation-for="Password" class="text-danger"></span>
+                </div>
+                <div class="form-element-row mb-5">
+                    <input type="text" asp-for="RePassword" class="form-control" placeholder="تکرار رمز عبور">
+                    <span asp-validation-for="RePassword" class="text-danger"></span>
+                </div>
+                <!-- end of form-element -->
+                <!-- start of form-element -->
+                <div class="form-element-row mb-3">
+                    <button type="submit" class="btn btn-primary">ثبت نام</button>
+                </div>
+
+                <!-- end of form-element -->
+                <!-- start of form-element -->
+                <div class="form-element-row">
+                    <div>
+                        با ورود و یا ثبت نام در سایت شما <a href="#" class="link">
+                            شرایط و
+                            قوانین
+                        </a> استفاده
+                        از تمام سرویس های
+                        سایت و <a href="#" class="link">قوانین حریم خصوصی</a> آن را می‌پذیرید.
+                    </div>
+                </div>
+                <!-- end of form-element -->
+            </form>
+            <!-- end of auth-form -->
+        </div>
+        <!-- end of auth-box -->
+    </div>
+    <!-- start of auth-container -->
+</main>
+
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

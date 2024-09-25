@@ -2,6 +2,7 @@
 using MyApp.Domain.Interfaces;
 using MyApp.Domain.Models;
 using MyApp.Domain.ViewModels;
+using MyApp.Domain.ViewModels.Users;
 
 namespace MyApp.Application.Services
 {
@@ -17,6 +18,21 @@ namespace MyApp.Application.Services
         public async Task<FilterUserViewModel> FilterAsync(FilterUserViewModel model)
         {
             return await _userRepository.FilterAsync(model);
+        }
+
+        public async Task<bool> IsExistEmail(string email)
+        {
+            return await _userRepository.IsExistEmail(email);
+        }
+
+        public async Task<bool> IsExistUserName(string userName)
+        {
+            return await (_userRepository.IsExistUserName(userName));
+        }
+
+        public async Task<User> LoginUser(LoginViewModel login)
+        {
+            return await _userRepository.LoginUser(login);
         }
     }
 }
