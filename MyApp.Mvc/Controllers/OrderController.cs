@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MyApp.Application.Interfaces;
+using MyApp.Application.Services;
 using MyApp.Domain.Models;
 using MyApp.Domain.ViewModels.Order;
 using System.Security.Claims;
@@ -158,6 +159,60 @@ namespace MyApp.Mvc.Controllers
             await _orderService.UpdateAsync(order);
             
         }
+
+
+        [Route("OnlinePayment/{id}")]
+        public async Task<IActionResult> OnlinePayment(int id)
+        {
+            // بررسی وضعیت پرداخت
+            if (!string.IsNullOrEmpty(HttpContext.Request.Query["Status"]) &&
+                HttpContext.Request.Query["Status"].ToString().ToLower() == "ok" &&
+                !string.IsNullOrEmpty(HttpContext.Request.Query["Authority"]))
+            {
+                string authority = HttpContext.Request.Query["Authority"];
+
+                // دریافت سفارش با توجه به id
+                var order = await _orderService.GetByIdAsync(id);
+
+                if (order == null)
+                {
+                    // اگر سفارش پیدا نشد، خطا برگردان
+                    return NotFound();
+                }
+
+                // پرداخت با استفاده از ZarinpalSandbox
+                var payment = new ZarinpalSandbox.Payment((int)order.Sum);
+
+                var res = await payment.Verification(authority);
+
+                // بررسی وضعیت پرداخت
+                if (res.Status == 100)
+                {
+                    // پرداخت موفقیت‌آمیز
+                    ViewBag.code = res.RefId;
+                    ViewBag.IsSuccess = true;
+
+                    // تنظیم وضعیت پرداخت در سفارش
+                    order.IsFinaly = true;
+
+                    // ذخیره تغییرات سفارش
+                    await _orderService.UpdateAsync(order);
+                }
+                else
+                {
+                    // در صورت شکست پرداخت
+                    ViewBag.IsSuccess = false;
+                }
+            }
+            else
+            {
+                // در صورت خطا در پارامترهای ورودی
+                ViewBag.IsSuccess = false;
+            }
+
+            return View();
+        }
+
     }
 }
 
