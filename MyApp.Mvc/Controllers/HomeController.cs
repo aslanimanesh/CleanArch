@@ -43,36 +43,32 @@ namespace MyApp.Mvc.Controllers
                 if (userId.HasValue)
                 {
                     var userDiscounts = await _userDiscountRepository.GetDiscountsForUserAsync(userId.Value);
-                    foreach (var productDiscount in productDiscounts)
+
+                    var applicableDiscounts = productDiscounts
+                        .Where(pd => userDiscounts.Any(ud => ud.DiscountId == pd.DiscountId))
+                        .ToList();
+
+                    if (applicableDiscounts.Any())
                     {
-                        if (userDiscounts.Any(ud => ud.DiscountId == productDiscount.DiscountId))
+                        foreach (var productDiscount in applicableDiscounts)
                         {
                             discountPercentage = productDiscount.Discount.DiscountPercentage;
-                            finalPrice *= (1 - (productDiscount.Discount.DiscountPercentage / 100));
+                            finalPrice *= (1 - (discountPercentage / 100));
                         }
-                    }
-                }
-                else
-                {
-                    foreach (var productDiscount in productDiscounts)
-                    {
-                        discountPercentage = productDiscount.Discount.DiscountPercentage;
-                        finalPrice *= (1 - (productDiscount.Discount.DiscountPercentage / 100));
                     }
                 }
 
                 productViewModels.Add(new ProductViewModelWithCalculateDiscount
-                {                   
+                {
                     Product = product,
                     FinalPrice = finalPrice,
                     DiscountPercentage = discountPercentage,
-                    
-
                 });
             }
 
             return View(productViewModels);
         }
+
 
     }
 }

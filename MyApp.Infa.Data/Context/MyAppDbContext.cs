@@ -16,6 +16,8 @@ namespace MyApp.Infa.Data.Context
         public DbSet<Discount> Discounts { get; set; }
         public DbSet<ProductDiscount> ProductDiscounts { get; set; }
         public DbSet<UserDiscount> UserDiscounts { get; set; }
+        public DbSet<Order> Orders { get; set; }
+        public DbSet<OrderDetail> OrderDetails { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

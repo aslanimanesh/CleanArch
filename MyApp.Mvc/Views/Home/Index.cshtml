@@ -448,7 +448,9 @@
                                                 <div class="product-actions">
                                                     <ul>
                                                         <li>
-                                                            <a href="#" data-bs-toggle="tooltip"
+                                                            <a
+                                                               asp-controller="Order" asp-action="AddToCart" asp-route-id="@product.Product.Id"
+                                                               data-bs-toggle="tooltip"
                                                                data-bs-placement="top" title=""
                                                                data-bs-original-title="افزودن به سبد خرید"
                                                                aria-label="افزودن به سبد خرید">

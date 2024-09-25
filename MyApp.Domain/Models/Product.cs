@@ -22,6 +22,7 @@ namespace MyApp.Domain.Models
 
         // Many-to-many relationship with Discount
         public ICollection<ProductDiscount> ProductDiscounts { get; set; }
+        public List<OrderDetail> OrderDetails { get; set; }
     }
     
 

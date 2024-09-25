@@ -17,6 +17,8 @@ namespace MyApp.Infra.Ioc
             services.AddScoped<IDiscountService, DiscoutService>();
             services.AddScoped<IDiscountAssignmentToProductService, DiscountAssignmentToProductService>();
             services.AddScoped<IDiscountAssignmentToUserService, DiscountAssignmentToUserService>();
+            services.AddScoped<IOrderService, OrderService>();
+            services.AddScoped<IOrderDetailsService, OrderDetailsService>();
 
 
             //Infra Data Layer
@@ -26,6 +28,8 @@ namespace MyApp.Infra.Ioc
             services.AddScoped<IDiscountRepository, DiscountRepository>();
             services.AddScoped<IProductDiscountRepository, ProductDiscountRepository>();
             services.AddScoped<IUserDiscountRepository, UserDiscountRepository>();
+            services.AddScoped<IOrderRepository, OrderRepository>();
+            services.AddScoped<IOrderDetailsRepository, OrderDetailsRepository>();
 
         }
     }
