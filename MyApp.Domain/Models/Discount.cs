@@ -8,16 +8,18 @@ namespace MyApp.Domain.Models
     {
         [Required]
         [Range(0, 100)]
-        public decimal DiscountPercentage { get; set; }
-        [AllowNull]
-        public DateTime StartDate { get; set; }
-        [AllowNull]
-        public DateTime EndDate { get; set; }
-        [AllowNull]
-        [StringLength(100)]
-        public string DiscountCode { get; set; }
 
-        public bool IsActive { get; set; } 
+        public decimal DiscountPercentage { get; set; }
+
+        public DateTime? StartDate { get; set; } = null;
+
+        public DateTime? EndDate { get; set; } = null;
+
+        [Required]
+        [MaxLength(50)]
+        public string DiscountCode { get; set; } 
+
+        public bool IsActive { get; set; } = true;
 
 
         // Many-to-many relationship with Product

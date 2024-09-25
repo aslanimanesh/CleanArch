@@ -30,14 +30,23 @@ namespace MyApp.Mvc.Areas.Admin.Controllers
             {
                 return NotFound();
             }
-            return View(user);
+            var userDetail = new UserViewModel
+            {
+                Id = id,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                Email = user.Email,
+                UserName = user.UserName,
+                IsActive = user.IsActive,
+            };
+
+            return View(userDetail);
         }
 
         // GET: UserController/Create
         public IActionResult Create()
         {
-            var viewModel = new CreateUserViewModel();
-            return View(viewModel);
+            return View();
         }
 
         // POST: UserController/Create
@@ -51,7 +60,10 @@ namespace MyApp.Mvc.Areas.Admin.Controllers
                 {
                     FirstName = viewModel.FirstName,
                     LastName = viewModel.LastName,
-                  
+                    Email = viewModel.Email,
+                    UserName = viewModel.UserName,
+                    Password = viewModel.Password
+                                      
                 };
 
                 await _userService.AddAsync(user);
@@ -76,7 +88,11 @@ namespace MyApp.Mvc.Areas.Admin.Controllers
                 Id = user.Id,
                 FirstName = user.FirstName,
                 LastName = user.LastName,
-                
+                Email = user.Email,
+                UserName = user.UserName,
+                Password = user.Password,
+                IsActive=user.IsActive,
+
             };
 
             return View(viewModel);
@@ -94,6 +110,10 @@ namespace MyApp.Mvc.Areas.Admin.Controllers
                     Id = viewModel.Id,
                     FirstName = viewModel.FirstName,
                     LastName = viewModel.LastName,
+                    Email = viewModel.Email,
+                    UserName = viewModel.UserName,
+                    Password = viewModel.Password,
+                    IsActive = viewModel.IsActive,
                    
                 };
 

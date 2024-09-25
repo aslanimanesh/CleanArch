@@ -70,14 +70,13 @@ namespace MyApp.Mvc.Areas.Admin.Controllers
         // GET: DiscountController/Create
         public IActionResult Create()
         {
-            var viewModel = new CreateDiscountViewModel();
-            return View(viewModel);
+            return View();
         }
 
         [HttpPost]
         public async Task<IActionResult> Create(CreateDiscountViewModel viewModel)
         {
-            if (!ModelState.IsValid)
+            if (ModelState.IsValid)
             {
                 var discount = new Discount
                 {
@@ -85,7 +84,7 @@ namespace MyApp.Mvc.Areas.Admin.Controllers
                     DiscountCode = viewModel.DiscountCode,
                     StartDate = viewModel.StartDate,
                     EndDate = viewModel.EndDate,
-                    IsActive = viewModel.IsActive,
+                    IsActive = true,
 
                 };
 
@@ -172,7 +171,10 @@ namespace MyApp.Mvc.Areas.Admin.Controllers
                 Products = products.Select(product => new ProductViewModel
                 {
                     Id = product.Id,
-                    Title = product.Title
+                    Title = product.Title,
+                    Description = product.Description,
+                    Price = product.Price,
+                    ImageName = product.ImageName,
                 }).ToList()
             };
 
@@ -239,6 +241,8 @@ namespace MyApp.Mvc.Areas.Admin.Controllers
                     Id = user.Id,
                     FirstName = user.FirstName,
                     LastName = user.LastName,
+                    UserName = user.UserName,
+                    Email = user.Email,
                 }).ToList()
             };
 

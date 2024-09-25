@@ -1,5 +1,9 @@
 ﻿@model MyApp.Domain.ViewModels.AssignDiscount.AssignDiscountToProductViewModel
 
+@{
+    ViewData["Title"] = "Assign Discount to Product";
+}
+
 <h2>Assign Discount to Products</h2>
 
 
@@ -10,6 +14,9 @@
             <tr>
                 <th>Select</th>
                 <th>Product Name</th> 
+                <th>Description</th>
+                <th>Price</th>
+                <th>Image</th>
             </tr>
         </thead>
         <tbody>
@@ -19,8 +26,17 @@
                     <td>
                         <input type="checkbox" name="ProductIds" value="@product.Id" />
                     </td>
-                    <td>
+                     <td>
                         @product.Title
+                    </td>
+                    <td>
+                        @product.Description
+                    </td>
+                    <td>
+                        @product.Price
+                    </td>
+                    <td>
+                        <img src="~/images/@product.ImageName" alt="@product.Title" style="width: 100px; height: 100px;" />
                     </td>
                 </tr>
             }

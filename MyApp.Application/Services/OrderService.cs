@@ -1,4 +1,5 @@
-﻿using MyApp.Application.Interfaces;
+﻿using Microsoft.EntityFrameworkCore;
+using MyApp.Application.Interfaces;
 using MyApp.Domain.Interfaces;
 using MyApp.Domain.Models;
 
@@ -16,5 +17,7 @@ namespace MyApp.Application.Services
         {
             return await _orderRepository.HasPendingOrder(userId);
         }
+
+       
     }
 }

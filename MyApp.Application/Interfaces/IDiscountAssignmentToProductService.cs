@@ -7,6 +7,5 @@ namespace MyApp.Application.Interfaces
     {
         Task AssignDiscountToProductsAsync(AssignDiscountToProductViewModel model);
         Task<ProductDiscount> GetProductDiscountAsync(int productId, int discountId);
-
     }
 }

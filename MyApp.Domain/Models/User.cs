@@ -22,7 +22,7 @@ namespace MyApp.Domain.Models
         [MaxLength(100)]
         public string Password { get; set; }
 
-        public bool IsActive { get; set; }
+        public bool IsActive { get; set; } = true;
 
 
         // Many-to-many relationship with Discount

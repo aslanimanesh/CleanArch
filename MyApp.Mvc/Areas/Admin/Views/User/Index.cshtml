@@ -2,7 +2,7 @@
 @model FilterUserViewModel
 
 @{
-    ViewData["Title"] = "لیست کاربران";
+    ViewData["Title"] = "List Users";
 }
 
 <div class="row clearfix">
@@ -56,11 +56,10 @@
                     <table class="table">
                         <thead>
                             <tr>
-                                <th>آیدی</th>
-                                <th>نام</th>
-                                <th>نام خانوادگی</th>
-                                <th>سن</th>
-                                <th>عملیات</th>
+                                <th>Id</th>
+                                <th>Name</th>
+                                <th>Family</th>
+                                <th>#</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -70,7 +69,6 @@
                                     <th scope="row">@user.Id</th>
                                     <td>@user.FirstName</td>
                                     <td>@user.LastName</td>
-                                    <td>@user.Age</td>
                                     <td>
                                         <a asp-action="Details" asp-route-id="@user.Id" class="btn btn-info">Details</a>
                                         <a asp-action="Edit" asp-route-id="@user.Id" class="btn btn-warning">Edit</a>

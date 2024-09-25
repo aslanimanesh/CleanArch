@@ -1,12 +1,12 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using MyApp.Domain.Models.Common;
 
 namespace MyApp.Domain.Models
 {
-    public class Order 
+    public class Order : BaseEntity
     {
-        [Key]
-        public int OrderId { get; set; }
+        
         [Required]
         public int UserId { get; set; }
 

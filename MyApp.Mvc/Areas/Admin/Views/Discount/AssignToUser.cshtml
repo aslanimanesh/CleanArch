@@ -12,7 +12,10 @@
         <thead>
             <tr>
                 <th>Select</th>
-                <th>User Name</th>
+                <th>FirstName</th>
+                <th>LastName</th>
+                <th>UserName</th>
+                <th>Email</th>
             </tr>
         </thead>
         <tbody>
@@ -24,6 +27,15 @@
                     </td>
                     <td>
                         @user.FirstName
+                    </td>
+                    <td>
+                        @user.LastName
+                    </td>
+                    <td>
+                        @user.UserName
+                    </td>
+                    <td>
+                        @user.Email
                     </td>
                 </tr>
             }

@@ -43,8 +43,7 @@ namespace MyApp.Mvc.Areas.Admin.Controllers
         // GET: ProductController/Create
         public IActionResult Create()
         {
-            var viewModel = new CreateProductViewModel();
-            return View(viewModel);
+            return View();
         }
 
         // POST: ProductController/Create
@@ -125,7 +124,7 @@ namespace MyApp.Mvc.Areas.Admin.Controllers
         }
 
         // POST: ProductController/Delete/5
-        [HttpPost, ActionName("Delete")]
+        [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {

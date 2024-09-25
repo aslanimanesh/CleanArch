@@ -3,11 +3,11 @@
 
     @{
     
-        ViewData["Title"] = "ShowOrder";
+        ViewData["Title"] = "سبد خرید";
         int row = 1;
     }
     
-    <h1>نمایش فاکتور</h1>
+    <h3>سبد خرید</h3>
     <hr />
     
     <table class="table table-bordered">
@@ -32,8 +32,8 @@
                 <td>@item.Price</td>
                 <td>@item.Sum</td>
                 <td>
-                    <a class="btn btn-sm btn-success" href="/Order/Command/@item.OrderDetailId?command=up">افزایش</a>
-                    <a class="btn btn-sm btn-warning" href="/Order/Command/@item.OrderDetailId?command=down">کاهش</a>
+                    <a class="btn btn-sm btn-success" href="/Order/Command/@item.OrderDetailId?command=up">+</a>
+                    <a class="btn btn-sm btn-warning" href="/Order/Command/@item.OrderDetailId?command=down">-</a>
                     <a class="btn btn-sm btn-danger" asp-action="Delete" asp-controller="Order" asp-route-id="@item.OrderDetailId">
                         حذف
                     </a>
@@ -42,15 +42,23 @@
     
             row += 1;
         }
+       
         <tr>
-            <td colspan="5" class="text-left">جمع کل : </td>
-            <td colspan="2">
-            </td>
-        </tr>
-        <tr>
-            <td colspan="4" class="text-left"></td>
-            <td colspan="3">
-                <a class="btn btn-primary btn-block" asp-controller="Order" asp-action="OnlinePayment"  asp-route-id="2">تایید و پرداخت نهایی</a>
+            <td colspan="1">کد تخفیف</td>
+        <td colspan="1">
+            <form action="/UserPanel/MyOrders/UseDiscount" method="post">
+                <input type="hidden" name="orderid" value="" />
+                <input type="text" name="code" class="form-control" />
+                <input type="submit" class="btn btn-primary btn-block" style="margin-top: 5px" value="اعمال" />
+            </form>
+        </td>
+        <td colspan="1">جمع کل : </td>
+        <td colspan="3">
+            
+        </td>
+
+            <td colspan="1">
+                <a class="btn btn-success btn-block" asp-controller="Order" asp-action="Payment"  asp-route-id="2">تایید و پرداخت نهایی</a>
     
             </td>
         </tr>

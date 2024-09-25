@@ -30,8 +30,8 @@
             <tr>
                 <td>@discount.DiscountCode</td>
                 <td>@discount.DiscountPercentage %</td>
-                <td>@discount.StartDate.ToShortDateString()</td>
-                <td>@discount.EndDate.ToShortDateString()</td>
+                <td>@(discount.StartDate.HasValue ? discount.StartDate.Value.ToString("yyyy-MM-dd") : "تعریف نشده")</td>
+                <td>@(discount.EndDate.HasValue ? discount.EndDate.Value.ToString("yyyy-MM-dd") : "تعریف نشده")</td>
                 <td>@(discount.IsActive ? "Yes" : "No")</td>
                 <td>
                     <a href="@Url.Action("Details", "Discount", new { id = discount.Id })" class="btn btn-info">Details</a>
