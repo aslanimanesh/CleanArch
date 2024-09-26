@@ -9,10 +9,10 @@
     
     <h3>سبد خرید</h3>
     <hr />
-@if (ViewBag.DiscountResult != null)
+@if (TempData["DiscountResult"] != null)
 {
     <div class="alert alert-warning alert-dismissible fade show" role="alert">
-        @ViewBag.DiscountResult
+        @TempData["DiscountResult"]
     </div>
 }
     

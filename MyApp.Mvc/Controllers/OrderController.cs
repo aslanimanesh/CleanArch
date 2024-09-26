@@ -29,6 +29,7 @@ namespace MyApp.Mvc.Controllers
             _dbContext = dbContext;
             
         }
+        [Authorize]
         public async Task<IActionResult> AddToCart(int id)
         {
             int CurrentUserID = Convert.ToInt32(User.FindFirstValue(ClaimTypes.NameIdentifier));
@@ -96,13 +97,13 @@ namespace MyApp.Mvc.Controllers
 
         }
 
+        [Authorize]
         public async Task<IActionResult> ShowOrder()
         {
             int CurrentUserID = Convert.ToInt32(User.FindFirstValue(ClaimTypes.NameIdentifier));
 
             Order order = await _orderService.HasPendingOrder(CurrentUserID);
-            ViewBag.OrderID = order.Id;
-            ViewBag.Sum = order.Sum;
+            
 
             List<ShowOrderViewModel> _list = new List<ShowOrderViewModel>();
             if (order != null)
@@ -123,6 +124,8 @@ namespace MyApp.Mvc.Controllers
                     });
 
                 }
+                ViewBag.OrderID = order.Id;
+                ViewBag.Sum = order.Sum;
             }
 
             return View(_list);
@@ -178,23 +181,20 @@ namespace MyApp.Mvc.Controllers
             await _orderService.UpdateAsync(order);
 
         }
-
+        [Authorize]
         [HttpPost]
+        
         public async Task<IActionResult> UseDiscount(string discountCode, int orderId)
         {
-            // گرفتن شناسه کاربر لاگین شده
-            string userIdStr = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            int? userId = null;
-            if (int.TryParse(userIdStr, out int parsedUserId))
-            {
-                userId = parsedUserId;
-            }
+            
+
+            int userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
 
             // اعمال تخفیف بر روی فاکتور
-            var resultMessage = await _discountService.ApplyDiscountToOrderAsync(discountCode, orderId, null);
+            var resultMessage = await _discountService.ApplyDiscountToOrderAsync(discountCode, orderId, userId);
 
             // نمایش نتیجه به کاربر
-            ViewBag.DiscountResult = resultMessage;
+            TempData["DiscountResult"] = resultMessage;
             //return RedirectToAction("Index", new { orderId });
             return RedirectToAction("ShowOrder", "Order");
         }

@@ -30,6 +30,7 @@ namespace MyApp.Infra.Ioc
             services.AddScoped<IUserDiscountRepository, UserDiscountRepository>();
             services.AddScoped<IOrderRepository, OrderRepository>();
             services.AddScoped<IOrderDetailsRepository, OrderDetailsRepository>();
+            services.AddScoped<IUsableUserDiscount, UsableUserDiscountRepository>();
 
         }
     }

@@ -30,7 +30,6 @@ namespace MyApp.Infa.Data.Repositories
 
         public async Task<IEnumerable<ProductDiscount>> GetDiscountsForProductsAsync(List<int> productIds, int discountId)
         {
-
             return await _dbContext.ProductDiscounts
                 .Where(pd => productIds.Contains(pd.ProductId) && pd.DiscountId == discountId)
                 .ToListAsync();

@@ -1,4 +1,5 @@
-﻿@model IEnumerable<MyApp.Domain.ViewModels.Products.ProductViewModelWithCalculateDiscount>
+﻿@using MyApp.Domain.ViewModels.Products
+@model IEnumerable<ProductViewModel>
 
 
 @{
@@ -415,13 +416,13 @@
                                     <div class="product-card product-card-horizontal">
                                         <div class="product-thumbnail">
                                             <a href="#">
-                                                <img src="/images/@product.Product.ImageName" alt="@product.Product.Title">
+                                                <img src="/images/@product.ImageName" alt="@product.Title">
                                             </a>
                                         </div>
                                         <div class="product-card-body">
                                             <h2 class="product-title">
                                                 <a href="#">
-                                                    @product.Product.Title
+                                                    @product.Title
                                                 </a>
                                             </h2>
                                             <div class="product-variant">
@@ -431,15 +432,8 @@
                                                 <span>+</span>
                                             </div>
                                             <div class="product-price fa-num">
-                                                @if(product.DiscountPercentage!=0)
-                                                {
-                                                    <div class="d-flex align-items-center">
-                                                        <del class="price-old">@product.Product.Price</del>
-                                                        <span class="discount ms-2">% @product.DiscountPercentage</span>
-                                                    </div>
-                                                }
                                                 <span class="price-now">
-                                                    @product.FinalPrice <span class="currency">تومان</span>
+                                                    @product.Price <span class="currency">تومان</span>
                                                 </span>
                                             </div>
                                         </div>
@@ -449,7 +443,7 @@
                                                     <ul>
                                                         <li>
                                                             <a
-                                                               asp-controller="Order" asp-action="AddToCart" asp-route-id="@product.Product.Id"
+                                                               asp-controller="Order" asp-action="AddToCart" asp-route-id="@product.Id"
                                                                data-bs-toggle="tooltip"
                                                                data-bs-placement="top" title=""
                                                                data-bs-original-title="افزودن به سبد خرید"
@@ -478,8 +472,8 @@
                                                 </div>
                                                 <div class="product-rating fa-num">
                                                     <i class="ri-star-fill star"></i>
-                                                    <strong>@product.Product.Price</strong>
-                                                    <span>(@product.Product.Price)</span>
+                                                    <strong>۴.۴</strong>
+                                                    <span>(۴۳۶)</span>
                                                 </div>
                                             </div>
                                         </div>

@@ -22,53 +22,18 @@ namespace MyApp.Mvc.Controllers
 
         public async Task<IActionResult> Index()
         {
-            string userIdStr = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            int? userId = null;
-            if (int.TryParse(userIdStr, out int parsedUserId))
-            {
-                userId = parsedUserId;
-            }
-
             var products = await _productService.GetAllAsync();
 
-            var productViewModels = new List<ProductViewModelWithCalculateDiscount>();
-
-            foreach (var product in products)
+            var productViewModels = products.Select(p => new ProductViewModel
             {
-                decimal finalPrice = product.Price;
-                decimal discountPercentage = 0;
-
-                var productDiscounts = await _productDiscountRepository.GetDiscountsForProductAsync(product.Id);
-
-                if (userId.HasValue)
-                {
-                    var userDiscounts = await _userDiscountRepository.GetDiscountsForUserAsync(userId.Value);
-
-                    var applicableDiscounts = productDiscounts
-                        .Where(pd => userDiscounts.Any(ud => ud.DiscountId == pd.DiscountId))
-                        .ToList();
-
-                    if (applicableDiscounts.Any())
-                    {
-                        foreach (var productDiscount in applicableDiscounts)
-                        {
-                            discountPercentage = productDiscount.Discount.DiscountPercentage;
-                            finalPrice *= (1 - (discountPercentage / 100));
-                        }
-                    }
-                }
-
-                productViewModels.Add(new ProductViewModelWithCalculateDiscount
-                {
-                    Product = product,
-                    FinalPrice = finalPrice,
-                    DiscountPercentage = discountPercentage,
-                });
-            }
+                Id = p.Id,
+                Title = p.Title,
+                Description = p.Description,
+                Price = p.Price,
+                ImageName = p.ImageName,
+            }).ToList();
 
             return View(productViewModels);
         }
-
-
     }
 }

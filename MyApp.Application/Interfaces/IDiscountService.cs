@@ -4,7 +4,7 @@ namespace MyApp.Application.Interfaces
 {
     public interface IDiscountService : IGenericService<Discount>
     {
-        Task<string> ApplyDiscountToOrderAsync(string discountCode, int orderId, int? userId);
+        Task<string> ApplyDiscountToOrderAsync(string discountCode, int orderId, int userId);
 
     }
 }

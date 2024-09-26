@@ -18,6 +18,7 @@ namespace MyApp.Infa.Data.Context
         public DbSet<UserDiscount> UserDiscounts { get; set; }
         public DbSet<Order> Orders { get; set; }
         public DbSet<OrderDetail> OrderDetails { get; set; }
+        public DbSet<UsableUserDiscount> UsableUserDiscounts { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -27,6 +28,10 @@ namespace MyApp.Infa.Data.Context
 
           
             modelBuilder.Entity<UserDiscount>()
+                .HasKey(ud => new { ud.UserId, ud.DiscountId });
+
+
+            modelBuilder.Entity<UsableUserDiscount>()
                 .HasKey(ud => new { ud.UserId, ud.DiscountId });
 
             base.OnModelCreating(modelBuilder);
