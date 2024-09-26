@@ -17,7 +17,8 @@ namespace MyApp.Domain.Models
 
         [Required]
         [MaxLength(50)]
-        public string DiscountCode { get; set; } 
+        public string DiscountCode { get; set; }
+        public int UsableCount { get; set; }
 
         public bool IsActive { get; set; } = true;
 

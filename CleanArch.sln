@@ -21,7 +21,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MyApp.Infa.Data", "MyApp.In
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MyApp.Application", "MyApp.Application\MyApp.Application.csproj", "{0AF9188F-8699-4627-AE7C-41C9A1476CD9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyApp.Infra.Ioc", "MyApp.Infra.Ioc\MyApp.Infra.Ioc.csproj", "{F90A9799-ACB5-432E-9EC5-2FBD0E6D17C7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MyApp.Infra.Ioc", "MyApp.Infra.Ioc\MyApp.Infra.Ioc.csproj", "{F90A9799-ACB5-432E-9EC5-2FBD0E6D17C7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -14,11 +14,28 @@ namespace MyApp.Infa.Data.Repositories
             _dbContext = dbContext;
         }
 
+        public async Task<decimal> GetOrderTotalPriceAsync(int orderId)
+        {
+            return await _dbContext.OrderDetails
+               .Where(o => o.OrderId == orderId)
+               .Select(d => d.Count * d.Price)
+               .SumAsync();
+        }
+
+        public async Task<Order> GetOrderWithDetailsAsync(int orderId)
+        {
+            return await _dbContext.Orders
+            .Include(o => o.OrderDetails)
+            .ThenInclude(od => od.Product)
+            .FirstOrDefaultAsync(o => o.Id == orderId);
+        }
+
         public async Task<Order> HasPendingOrder(int userId)
         {
             var order = _dbContext.Orders.SingleOrDefault(o => o.UserId == userId && !o.IsFinaly);
             return order;
         }
+
 
         //public DiscountUseType UseDiscount(int orderId, string code)
         //{

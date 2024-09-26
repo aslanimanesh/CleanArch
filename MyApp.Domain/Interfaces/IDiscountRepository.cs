@@ -4,5 +4,6 @@ namespace MyApp.Domain.Interfaces
 {
     public interface IDiscountRepository : IGenericRepository<Discount>
     {
+        Task<Discount> GetByDiscountCodeAsync(string discountCode);
     }
 }

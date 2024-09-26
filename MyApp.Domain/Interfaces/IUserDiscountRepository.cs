@@ -7,5 +7,6 @@ namespace MyApp.Domain.Interfaces
     {
         Task<UserDiscount> GetAsync(Expression<Func<UserDiscount, bool>> predicate);
         Task<List<UserDiscount>> GetDiscountsForUserAsync(int userId);
+        Task<UserDiscount> GetUserDiscountAsync(int userId, int discountId);
     }
 }

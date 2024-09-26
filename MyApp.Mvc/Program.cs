@@ -35,6 +35,9 @@ builder.Services.AddAuthentication(options =>
 
 #endregion
 
+
+builder.Services.AddHttpContextAccessor();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

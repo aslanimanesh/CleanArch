@@ -13,6 +13,17 @@ namespace MyApp.Application.Services
         {
             _orderRepository = orderRepository;
         }
+
+        public async Task<decimal> GetOrderTotalAsync(int orderId)
+        {
+            return await _orderRepository.GetOrderTotalPriceAsync(orderId);
+        }
+
+        public async Task<Order> GetOrderWithDetailsAsync(int orderId)
+        {
+            return await _orderRepository.GetOrderWithDetailsAsync(orderId);
+        }
+
         public async Task<Order> HasPendingOrder(int userId)
         {
             return await _orderRepository.HasPendingOrder(userId);

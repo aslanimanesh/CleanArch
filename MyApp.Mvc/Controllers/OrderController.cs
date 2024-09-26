@@ -16,15 +16,18 @@ namespace MyApp.Mvc.Controllers
         private readonly IOrderService _orderService;
         private readonly IOrderDetailsService _orderDetailsService;
         private readonly IProductService _productService;
+        private readonly IDiscountService _discountService;
         private readonly MyAppDbContext _dbContext;
 
         public OrderController(IOrderService orderService, IOrderDetailsService orderDetailsService,
-            IProductService productService , MyAppDbContext  dbContext)
+            IProductService productService , IDiscountService discountService ,MyAppDbContext  dbContext)
         {
             _orderService = orderService;
             _orderDetailsService = orderDetailsService;
             _productService = productService;
+            _discountService = discountService;
             _dbContext = dbContext;
+            
         }
         public async Task<IActionResult> AddToCart(int id)
         {
@@ -38,7 +41,7 @@ namespace MyApp.Mvc.Controllers
                     UserId = CurrentUserID,
                     CreateDate = DateTime.Now,
                     IsFinaly = false,
-                    Sum = 0
+                    Sum = 0,
                 };
                 
                 var product = await _productService.GetByIdAsync(id);
@@ -55,7 +58,9 @@ namespace MyApp.Mvc.Controllers
                     Price = product.Price,
                     ProductId = id
                 });
-         
+
+                await UpdateSumOrder(order.Id);
+
             }
             else
             {
@@ -84,7 +89,9 @@ namespace MyApp.Mvc.Controllers
                 }
 
             }
-            //UpdateSumOrder(order.OrderId);
+
+            await UpdateSumOrder(order.Id);
+
             return RedirectToAction("ShowOrder", "Order");
 
         }
@@ -94,6 +101,8 @@ namespace MyApp.Mvc.Controllers
             int CurrentUserID = Convert.ToInt32(User.FindFirstValue(ClaimTypes.NameIdentifier));
 
             Order order = await _orderService.HasPendingOrder(CurrentUserID);
+            ViewBag.OrderID = order.Id;
+            ViewBag.Sum = order.Sum;
 
             List<ShowOrderViewModel> _list = new List<ShowOrderViewModel>();
             if (order != null)
@@ -121,7 +130,10 @@ namespace MyApp.Mvc.Controllers
 
         public async Task<IActionResult> Delete(int id)
         {
+           
+            var orderDetail = await _orderDetailsService.GetByIdAsync(id);
             await _orderDetailsService.DeleteAsync(id);
+            await UpdateSumOrder(orderDetail.OrderId);
 
             return RedirectToAction("ShowOrder", "Order");
         }
@@ -154,17 +166,38 @@ namespace MyApp.Mvc.Controllers
                     }
             }
 
+            await UpdateSumOrder(orderDetail.OrderId);
+
             return RedirectToAction("ShowOrder", "Order");
         }
-        public async void UpdateSumOrder(int orderId)
+
+        public async Task UpdateSumOrder(int orderId)
         {
             var order = await _orderService.GetByIdAsync(orderId);
-            //order.Sum = _ctx.OrderDetails.Where(o => o.OrderId == order.OrderId).Select(d => d.Count * d.Price).Sum();
-            //Sum = _ctx.OrderDetails.Where(o => o.OrderId == order.OrderId).Select(d => d.Count * d.Price).Sum();
+            order.Sum = await _orderService.GetOrderTotalAsync(orderId);
             await _orderService.UpdateAsync(order);
-            
+
         }
 
+        [HttpPost]
+        public async Task<IActionResult> UseDiscount(string discountCode, int orderId)
+        {
+            // گرفتن شناسه کاربر لاگین شده
+            string userIdStr = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            int? userId = null;
+            if (int.TryParse(userIdStr, out int parsedUserId))
+            {
+                userId = parsedUserId;
+            }
+
+            // اعمال تخفیف بر روی فاکتور
+            var resultMessage = await _discountService.ApplyDiscountToOrderAsync(discountCode, orderId, null);
+
+            // نمایش نتیجه به کاربر
+            ViewBag.DiscountResult = resultMessage;
+            //return RedirectToAction("Index", new { orderId });
+            return RedirectToAction("ShowOrder", "Order");
+        }
 
         [Authorize]
         public IActionResult Payment()

@@ -27,5 +27,13 @@ namespace MyApp.Infa.Data.Repositories
            .Include(pd => pd.Discount) 
            .ToListAsync();
         }
+
+        public async Task<IEnumerable<ProductDiscount>> GetDiscountsForProductsAsync(List<int> productIds, int discountId)
+        {
+
+            return await _dbContext.ProductDiscounts
+                .Where(pd => productIds.Contains(pd.ProductId) && pd.DiscountId == discountId)
+                .ToListAsync();
+        }
     }
 }
