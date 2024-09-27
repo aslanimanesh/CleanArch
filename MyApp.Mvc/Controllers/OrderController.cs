@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MyApp.Application.Interfaces;
-using MyApp.Application.Services;
 using MyApp.Domain.Models;
 using MyApp.Domain.ViewModels.Order;
 using MyApp.Infa.Data.Context;

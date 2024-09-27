@@ -6,11 +6,15 @@ namespace MyApp.Infa.Data.Repositories
 {
     public class ProductRepository : GenericRepository<Product>, IProductRepository
     {
+        #region Fields
         private readonly MyAppDbContext _dbContext;
+        #endregion
 
+        #region Constructor
         public ProductRepository(MyAppDbContext dbContext) : base(dbContext)
         {
             _dbContext = dbContext;
         }
+        #endregion
     }
 }

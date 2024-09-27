@@ -10,12 +10,18 @@ namespace MyApp.Mvc.Controllers
 {
     public class AccountController : Controller
     {
+        #region Fields
         private readonly IUserService _userService;
+        #endregion
 
+        #region Constructor
         public AccountController(IUserService userService)
         {
             _userService = userService;
         }
+        #endregion
+
+        #region Actions
 
         #region Register
 
@@ -35,13 +41,13 @@ namespace MyApp.Mvc.Controllers
             }
 
 
-            if (await _userService.IsExistUserName(register.UserName.Trim()))
+            if (await _userService.IsExistUserName(register.UserName , null))
             {
                 ModelState.AddModelError("UserName", "نام کاربری وارد شده قبلا ثبت نام کرده است");
                 return View(register);
             }
 
-            if (await _userService.IsExistEmail(register.Email.Trim().ToLower()))
+            if (await _userService.IsExistEmail(register.Email , null))
             {
                 ModelState.AddModelError("Email", "ایمیل وارد شده قبلا ثبت نام کرده است");
                 return View(register);
@@ -50,12 +56,12 @@ namespace MyApp.Mvc.Controllers
 
             var user = new User()
             {
-               FirstName = register.FirstName,
-               LastName = register.LastName,
-               Email = register.Email,
-               UserName = register.UserName,
-               Password = register.Password,
-               IsActive = true,
+                FirstName = register.FirstName,
+                LastName = register.LastName,
+                Email = register.Email,
+                UserName = register.UserName,
+                Password = register.Password,
+                IsActive = true,
             };
             await _userService.AddAsync(user);
 
@@ -126,6 +132,8 @@ namespace MyApp.Mvc.Controllers
             HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             return Redirect("/Login");
         }
+
+        #endregion
 
         #endregion
     }

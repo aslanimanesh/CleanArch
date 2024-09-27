@@ -1,8 +1,6 @@
-﻿using Microsoft.AspNetCore.Http;
-using MyApp.Application.Interfaces;
+﻿using MyApp.Application.Interfaces;
 using MyApp.Domain.Interfaces;
 using MyApp.Domain.Models;
-using System.Security.Claims;
 
 namespace MyApp.Application.Services
 {
@@ -98,7 +96,6 @@ namespace MyApp.Application.Services
             }
             order.Sum = newTotalPrice;
 
-
             await _orderRepository.UpdateAsync(order);
 
             discount.UsableCount -= 1;
@@ -107,6 +104,11 @@ namespace MyApp.Application.Services
             await _usableUserDiscount.AddAsync(new UsableUserDiscount() { UserId = userId ,DiscountId=discount.Id});
 
             return "کد تخفیف با موفقیت اعمال شد.";
+        }
+
+        public async Task<bool> IsExistDiscountCode(string discountCode)
+        {
+            return await _discountRepository.IsExistDiscountCode(discountCode);
         }
     }
 

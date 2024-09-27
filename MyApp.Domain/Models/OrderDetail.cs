@@ -1,11 +1,11 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using MyApp.Domain.Models.Common;
+﻿using MyApp.Domain.Models.Common;
+using System.ComponentModel.DataAnnotations;
 
 namespace MyApp.Domain.Models
 {
     public class OrderDetail : BaseEntity
-    { 
+    {
+        #region Properties
 
         [Required]
         public int OrderId { get; set; }
@@ -19,10 +19,13 @@ namespace MyApp.Domain.Models
         [Required]
         public decimal Price { get; set; }
 
+        #endregion
 
+        #region Navigation Properties
 
         public Order Order { get; set; }
         public Product Product { get; set; }
 
+        #endregion
     }
 }

@@ -10,8 +10,8 @@ namespace MyApp.Infra.Ioc
     {
         public static void RegisterService(IServiceCollection services)
         {
-            //Application Layer
 
+            #region Application Layer
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IProductService, ProductService>();
             services.AddScoped<IDiscountService, DiscoutService>();
@@ -19,10 +19,9 @@ namespace MyApp.Infra.Ioc
             services.AddScoped<IDiscountAssignmentToUserService, DiscountAssignmentToUserService>();
             services.AddScoped<IOrderService, OrderService>();
             services.AddScoped<IOrderDetailsService, OrderDetailsService>();
+            #endregion
 
-
-            //Infra Data Layer
-
+            #region Infra Data Layer
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IProductRepository, ProductRepository>();
             services.AddScoped<IDiscountRepository, DiscountRepository>();
@@ -31,6 +30,7 @@ namespace MyApp.Infra.Ioc
             services.AddScoped<IOrderRepository, OrderRepository>();
             services.AddScoped<IOrderDetailsRepository, OrderDetailsRepository>();
             services.AddScoped<IUsableUserDiscount, UsableUserDiscountRepository>();
+            #endregion
 
         }
     }

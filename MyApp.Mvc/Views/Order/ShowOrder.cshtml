@@ -1,56 +1,56 @@
 ﻿@model IEnumerable<MyApp.Domain.ViewModels.Order.ShowOrderViewModel>
 
+@{
 
-    @{
-    
-        ViewData["Title"] = "سبد خرید";
-        int row = 1;
-    }
-    
-    <h3>سبد خرید</h3>
-    <hr />
+    ViewData["Title"] = "سبد خرید";
+    int row = 1;
+}
+
+<h3>سبد خرید</h3>
+<hr />
 @if (TempData["DiscountResult"] != null)
 {
     <div class="alert alert-warning alert-dismissible fade show" role="alert">
         @TempData["DiscountResult"]
     </div>
 }
-    
-    <table class="table table-bordered">
+
+<table class="table table-bordered">
+
+    <tr>
+        <th>#</th>
+        <th>تصویر</th>
+        <th>عنوان</th>
+        <th>تعداد</th>
+        <th>قیمت</th>
+        <th>جمع</th>
+        <th></th>
+    </tr>
+    @foreach (var item in Model)
+    {
         <tr>
-            <th>#</th>
-            <th>تصویر</th>
-            <th>عنوان</th>
-            <th>تعداد</th>
-            <th>قیمت</th>
-            <th>جمع</th>
-            <th></th>
+            <td>@row</td>
+            <td>
+                <img style="max-width: 150px" class="thumbnail" src="/Images/@item.ImageName" />
+            </td>
+            <td>@item.Title</td>
+            <td>@item.Count</td>
+            <td>@item.Price.ToString("N0", new System.Globalization.CultureInfo("fa-IR")) <span class="currency">تومان</span></td>
+                <td>@item.Sum.ToString("N0", new System.Globalization.CultureInfo("fa-IR")) <span class="currency">تومان</span></td>
+            <td>
+                <a class="btn btn-sm btn-success" href="/Order/Command/@item.OrderDetailId?command=up">+</a>
+                <a class="btn btn-sm btn-warning" href="/Order/Command/@item.OrderDetailId?command=down">-</a>
+                <a class="btn btn-sm btn-danger" asp-action="Delete" asp-controller="Order" asp-route-id="@item.OrderDetailId">
+                    حذف
+                </a>
+            </td>
         </tr>
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td>@row</td>
-                <td>
-                    <img style="max-width: 150px" class="thumbnail" src="/Images/@item.ImageName" />
-                </td>
-                <td>@item.Title</td>
-                <td>@item.Count</td>
-                <td>@item.Price</td>
-                <td>@item.Sum</td>
-                <td>
-                    <a class="btn btn-sm btn-success" href="/Order/Command/@item.OrderDetailId?command=up">+</a>
-                    <a class="btn btn-sm btn-warning" href="/Order/Command/@item.OrderDetailId?command=down">-</a>
-                    <a class="btn btn-sm btn-danger" asp-action="Delete" asp-controller="Order" asp-route-id="@item.OrderDetailId">
-                        حذف
-                    </a>
-                </td>
-            </tr>
-    
-            row += 1;
-        }
-       
-        <tr>
-            <td colspan="1">کد تخفیف</td>
+
+        row += 1;
+    }
+
+    <tr>
+        <td colspan="1">کد تخفیف</td>
         <td colspan="1">
             <form asp-controller="Order" asp-action="UseDiscount" method="post">
                 <input type="hidden" name="orderId" value="@ViewBag.OrderId" />
@@ -60,19 +60,18 @@
         </td>
         <td colspan="1">جمع کل : </td>
         <td colspan="3">
-            @ViewBag.Sum
+            @ViewBag.Sum.ToString("N0", new System.Globalization.CultureInfo("fa-IR")) <span class="currency">تومان</span>
         </td>
 
-            <td colspan="1">
-                <a class="btn btn-success btn-block" asp-controller="Order" asp-action="Payment">تایید و پرداخت نهایی</a>
-            </td>
-        </tr>
-    </table>
-    
-    
-    @section Scripts {
-        @{
-            await Html.RenderPartialAsync("_ValidationScriptsPartial");
-        }
+        <td colspan="1">
+            <a class="btn btn-success btn-block" asp-controller="Order" asp-action="Payment">تایید و پرداخت نهایی</a>
+        </td>
+    </tr>
+</table>
+
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
-    
+}

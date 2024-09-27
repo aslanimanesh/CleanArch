@@ -2,33 +2,46 @@
 using MyApp.Application.Interfaces;
 using MyApp.Domain.Interfaces;
 using MyApp.Domain.Models;
+using System.Threading.Tasks;
 
 namespace MyApp.Application.Services
 {
-    public class OrderService :GenericService<Order>, IOrderService
+    public class OrderService : GenericService<Order>, IOrderService
     {
+        #region Fields
         private readonly IOrderRepository _orderRepository;
+        #endregion
 
+        #region Constructor
         public OrderService(IOrderRepository orderRepository) : base(orderRepository)
         {
             _orderRepository = orderRepository;
         }
+        #endregion
 
+        #region Public Methods
+
+        #region GetOrderTotalAsync
         public async Task<decimal> GetOrderTotalAsync(int orderId)
         {
             return await _orderRepository.GetOrderTotalPriceAsync(orderId);
         }
+        #endregion
 
+        #region GetOrderWithDetailsAsync
         public async Task<Order> GetOrderWithDetailsAsync(int orderId)
         {
             return await _orderRepository.GetOrderWithDetailsAsync(orderId);
         }
+        #endregion
 
+        #region HasPendingOrder
         public async Task<Order> HasPendingOrder(int userId)
         {
             return await _orderRepository.HasPendingOrder(userId);
         }
+        #endregion
 
-       
+        #endregion
     }
 }

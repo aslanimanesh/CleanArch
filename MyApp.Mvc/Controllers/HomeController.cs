@@ -1,25 +1,25 @@
 using Microsoft.AspNetCore.Mvc;
 using MyApp.Application.Interfaces;
-using MyApp.Domain.Interfaces;
 using MyApp.Domain.ViewModels.Products;
-using System.Security.Claims;
 
 namespace MyApp.Mvc.Controllers
 {
     public class HomeController : Controller
     {
+        #region Fields
         private readonly IProductService _productService;
-        private readonly IProductDiscountRepository _productDiscountRepository;
-        private readonly IUserDiscountRepository _userDiscountRepository;
+        #endregion
 
-        public HomeController(IProductService productService , IProductDiscountRepository productDiscountRepository,
-            IUserDiscountRepository userDiscountRepository)
+        #region Constructor
+        public HomeController(IProductService productService)
         {
             _productService = productService;
-            _productDiscountRepository = productDiscountRepository;
-            _userDiscountRepository = userDiscountRepository;
         }
+        #endregion
 
+        #region Actions
+
+        #region List
         public async Task<IActionResult> Index()
         {
             var products = await _productService.GetAllAsync();
@@ -35,5 +35,8 @@ namespace MyApp.Mvc.Controllers
 
             return View(productViewModels);
         }
+        #endregion
+
+        #endregion
     }
 }

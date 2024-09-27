@@ -7,13 +7,24 @@ namespace MyApp.Application.Services
 {
     public class DiscountAssignmentToUserService : GenericService<UserDiscount>, IDiscountAssignmentToUserService
     {
+        #region Fields
+
         private readonly IUserDiscountRepository _userDiscountRepository;
+
+        #endregion
+
+        #region Constructor
 
         public DiscountAssignmentToUserService(IUserDiscountRepository userDiscountRepository) : base(userDiscountRepository)
         {
             _userDiscountRepository = userDiscountRepository;
         }
 
+        #endregion
+
+        #region Public Methods
+
+        #region AssignDiscountToUsersAsync
         public async Task AssignDiscountToUsersAsync(AssignDiscountToUserViewModel model)
         {
             var userDiscounts = model.UserIds.Select(userId => new UserDiscount
@@ -27,10 +38,15 @@ namespace MyApp.Application.Services
                 await _userDiscountRepository.AddAsync(ur);
             }
         }
+        #endregion
 
+        #region GetUserDiscountAsync
         public async Task<UserDiscount> GetUserDiscountAsync(int userId, int discountId)
         {
             return await _userDiscountRepository.GetAsync(pd => pd.UserId == userId && pd.DiscountId == discountId);
         }
+        #endregion
+
+        #endregion
     }
 }

@@ -1,8 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages;
+using Microsoft.Win32;
 using MyApp.Application.Interfaces;
 using MyApp.Domain.Models;
-using MyApp.Domain.ViewModels;
-using System.Threading.Tasks;
+using MyApp.Domain.ViewModels.Users;
 
 namespace MyApp.Mvc.Areas.Admin.Controllers
 {
@@ -54,23 +55,37 @@ namespace MyApp.Mvc.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(CreateUserViewModel viewModel)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                var user = new User
-                {
-                    FirstName = viewModel.FirstName,
-                    LastName = viewModel.LastName,
-                    Email = viewModel.Email,
-                    UserName = viewModel.UserName,
-                    Password = viewModel.Password
-                                      
-                };
-
-                await _userService.AddAsync(user);
-                return RedirectToAction("Index");
+                return View(viewModel);
             }
 
-            return View(viewModel);
+
+            if (await _userService.IsExistUserName(viewModel.UserName, null))
+            {
+                ModelState.AddModelError("UserName", "نام کاربری وارد شده قبلا ثبت نام کرده است");
+                return View(viewModel);
+            }
+
+            if (await _userService.IsExistEmail(viewModel.Email, null))
+            {
+                ModelState.AddModelError("Email", "ایمیل وارد شده قبلا ثبت نام کرده است");
+                return View(viewModel);
+            }
+
+            var user = new User
+            {
+                FirstName = viewModel.FirstName,
+                LastName = viewModel.LastName,
+                Email = viewModel.Email,
+                UserName = viewModel.UserName,
+                Password = viewModel.Password,
+                IsActive= true,
+            };
+
+            await _userService.AddAsync(user);
+
+            return RedirectToAction("Index");
         }
 
         // GET: UserController/Edit/5
@@ -103,25 +118,38 @@ namespace MyApp.Mvc.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(EditUserViewModel viewModel)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                var user = new User
-                {
-                    Id = viewModel.Id,
-                    FirstName = viewModel.FirstName,
-                    LastName = viewModel.LastName,
-                    Email = viewModel.Email,
-                    UserName = viewModel.UserName,
-                    Password = viewModel.Password,
-                    IsActive = viewModel.IsActive,
-                   
-                };
-
-                await _userService.UpdateAsync(user);
-                return RedirectToAction("Index");
+                return View(viewModel);
             }
 
-            return View(viewModel);
+            if (await _userService.IsExistUserName(viewModel.UserName, viewModel.Id))
+            {
+                ModelState.AddModelError("UserName", "نام کاربری وارد شده قبلا ثبت نام کرده است");
+                return View(viewModel);
+            }
+
+            if (await _userService.IsExistEmail(viewModel.Email, viewModel.Id))
+            {
+                ModelState.AddModelError("Email", "ایمیل وارد شده قبلا ثبت نام کرده است");
+                return View(viewModel);
+            }
+
+            var user = new User
+            {
+                Id = viewModel.Id,
+                FirstName = viewModel.FirstName,
+                LastName = viewModel.LastName,
+                Email = viewModel.Email,
+                UserName = viewModel.UserName,
+                Password = viewModel.Password,
+                IsActive = viewModel.IsActive,
+
+            };
+
+            await _userService.UpdateAsync(user);
+            return RedirectToAction("Index");
+
         }
 
         // GET: UserController/Delete/5

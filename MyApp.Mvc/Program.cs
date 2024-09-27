@@ -8,15 +8,24 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddRazorPages();
 
+#region AddContext
+
 builder.Services.AddDbContext<MyAppDbContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
-}
-);
+});
 
-builder.Services.AddControllersWithViews();
+#endregion
+
+#region AddDepencency
+
 RegisterServices(builder.Services);
+static void RegisterServices(IServiceCollection services)
+{
+    DependencyContainer.RegisterService(services);
+}
 
+#endregion
 
 #region Add Authentication
 
@@ -35,6 +44,7 @@ builder.Services.AddAuthentication(options =>
 
 #endregion
 
+builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
 
@@ -67,12 +77,5 @@ app.MapControllerRoute(
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
 app.MapRazorPages();
-
-
- static void RegisterServices(IServiceCollection services)
-{
-    DependencyContainer.RegisterService(services);
-}
-
 
 app.Run();

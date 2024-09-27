@@ -5,17 +5,28 @@ namespace MyApp.Application.Services
 {
     public class GenericService<T> : IGenericService<T> where T : class
     {
+        #region Fields
+
         private readonly IGenericRepository<T> _repository;
+
+        #endregion
+
+        #region Constructor
 
         public GenericService(IGenericRepository<T> repository)
         {
             _repository = repository;
         }
 
+        #endregion
+
+        #region CRUD Methods
+
         public async Task<IReadOnlyList<T>> GetAllAsync()
         {
             return await _repository.GetAllAsync();
         }
+
         public async Task<T> GetByIdAsync(int id)
         {
             return await _repository.GetByIdAsync(id);
@@ -40,10 +51,6 @@ namespace MyApp.Application.Services
             }
         }
 
-        public async Task<bool> Exist(int id)
-        {
-            var entity = await GetByIdAsync(id);
-            return entity != null;
-        }
+        #endregion
     }
 }

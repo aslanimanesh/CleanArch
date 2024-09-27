@@ -1,14 +1,14 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.Diagnostics.CodeAnalysis;
-using MyApp.Domain.Models.Common;
+﻿using MyApp.Domain.Models.Common;
+using System.ComponentModel.DataAnnotations;
 
 namespace MyApp.Domain.Models
 {
-    public class Discount :  BaseEntity
+    public class Discount : BaseEntity
     {
+        #region Properties
+
         [Required]
         [Range(0, 100)]
-
         public decimal DiscountPercentage { get; set; }
 
         public DateTime? StartDate { get; set; } = null;
@@ -24,6 +24,9 @@ namespace MyApp.Domain.Models
 
         public bool IsActive { get; set; } = true;
 
+        #endregion
+
+        #region Navigation Properties
 
         // Many-to-many relationship with Product
         public ICollection<ProductDiscount> ProductDiscounts { get; set; }
@@ -31,5 +34,6 @@ namespace MyApp.Domain.Models
         // Many-to-many relationship with User
         public ICollection<UserDiscount> UserDiscounts { get; set; }
 
+        #endregion
     }
 }

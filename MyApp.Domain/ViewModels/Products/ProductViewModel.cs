@@ -1,10 +1,11 @@
-﻿using MyApp.Domain.Models;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace MyApp.Domain.ViewModels.Products
 {
-    public class ProductViewModel 
+    public class ProductViewModel
     {
+        #region Properties
+
         public int Id { get; set; }
 
         [Required]
@@ -20,5 +21,6 @@ namespace MyApp.Domain.ViewModels.Products
 
         public string? ImageName { get; set; } = null;
 
+        #endregion
     }
 }

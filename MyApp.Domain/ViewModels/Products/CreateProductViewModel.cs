@@ -1,15 +1,11 @@
-﻿using MyApp.Domain.Models;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace MyApp.Domain.ViewModels.Products
 {
-    public class CreateProductViewModel 
+    public class CreateProductViewModel
     {
+        #region Properties
+
         [Required]
         [MaxLength(100)]
         public string Title { get; set; }
@@ -22,5 +18,7 @@ namespace MyApp.Domain.ViewModels.Products
         public decimal Price { get; set; }
 
         public string? ImageName { get; set; } = null;
+
+        #endregion
     }
 }

@@ -155,7 +155,9 @@
 </header>
 
 <main class="page-content">
+
     <div class="container">
+
         <!-- start of mini-slider -->
         <div class="mini-slider-container mb-5">
             <!-- Slider main container -->
@@ -192,6 +194,7 @@
             </div>
         </div>
         <!-- end of mini-slider -->
+
         <!-- start of box => categories-slider -->
         <div class="ui-box mb-5">
             <div class="ui-box-title">دسته بندی محصولات</div>
@@ -295,10 +298,12 @@
             </div>
         </div>
         <!-- end of box => categories-slider -->
+
         <!-- start of box -->
         <div class="ui-box bg-white border-0 pb-0">
             <div class="ui-box-title">منتخب محصولات</div>
         </div>
+        
         <!-- start of nav-tabs -->
         <ul class="nav nav-pills nav-tabs align-items-center justify-content-center mb-4" id="sort-tab"
             role="tablist">
@@ -325,6 +330,7 @@
             </li>
         </ul>
         <!-- end of nav-tabs -->
+
         <!-- start of tab-content -->
         <div class="tab-content mb-5" id="sort-tabContent">
             <!-- start of tab-pane -->
@@ -334,80 +340,6 @@
                     <div class="ui-box-content">
                         <div class="row mx-0">
                             <!-- ForeachProduct -->
-                            <div class="col-lg-4 col-sm-6 mb-4">
-                                <!-- start of product-card -->
-                                <div class="product-card product-card-horizontal">
-                                    <div class="product-thumbnail">
-                                        <a href="#">
-                                            <img src="./template/theme-assets/images/products/01.jpg"
-                                                 alt="product title">
-                                        </a>
-                                    </div>
-                                    <div class="product-card-body">
-                                        <h2 class="product-title">
-                                            <a href="#">
-                                                گوشی موبایل اپل مدل iPhone 13 A2634 دو سیم‌ کارت
-                                                ظرفیت 128
-                                                گیگابایت و رم 4 گیگابایت
-                                            </a>
-                                        </h2>
-                                        <div class="product-variant">
-                                            <span class="color" style="background-color: #d4d4d4;"></span>
-                                            <span class="color" style="background-color: #e86841;"></span>
-                                            <span class="color" style="background-color: #b82c32;"></span>
-                                            <span>+</span>
-                                        </div>
-                                        <div class="product-price fa-num">
-                                            <div class="d-flex align-items-center">
-                                                <del class="price-old">26,900,000</del>
-                                                <span class="discount ms-2">%2</span>
-                                            </div>
-                                            <span class="price-now">
-                                                26,249,000 <span class="currency">تومان</span>
-                                            </span>
-                                        </div>
-                                    </div>
-                                    <div class="product-card-footer">
-                                        <div class="d-flex align-items-center justify-content-between mt-2 py-2">
-                                            <div class="product-actions">
-                                                <ul>
-                                                    <li>
-                                                        <a href="#" data-bs-toggle="tooltip"
-                                                           data-bs-placement="top" title=""
-                                                           data-bs-original-title="افزودن به سبد خرید"
-                                                           aria-label="افزودن به سبد خرید">
-                                                            <i class="ri-shopping-cart-line"></i>
-                                                        </a>
-                                                    </li>
-                                                    <li>
-                                                        <a href="#" data-bs-toggle="tooltip"
-                                                           data-bs-placement="top" title=""
-                                                           data-bs-original-title="مشاهده سریع"
-                                                           aria-label="مشاهده سریع"
-                                                           data-remodal-target="quick-view-modal">
-                                                            <i class="ri-search-line"></i>
-                                                        </a>
-                                                    </li>
-                                                    <li>
-                                                        <a href="#" data-bs-toggle="tooltip"
-                                                           data-bs-placement="top" title=""
-                                                           data-bs-original-title="افزودن به علاقمندی"
-                                                           aria-label="افزودن به علاقمندی">
-                                                            <i class="ri-heart-3-line"></i>
-                                                        </a>
-                                                    </li>
-                                                </ul>
-                                            </div>
-                                            <div class="product-rating fa-num">
-                                                <i class="ri-star-fill star"></i>
-                                                <strong>۴.۴</strong>
-                                                <span>(۴۳۶)</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <!-- end of product-card -->
-                            </div>
 
                             @foreach (var product in Model)
                             {
@@ -433,7 +365,7 @@
                                             </div>
                                             <div class="product-price fa-num">
                                                 <span class="price-now">
-                                                    @product.Price <span class="currency">تومان</span>
+                                                    @product.Price.ToString("N0", new System.Globalization.CultureInfo("fa-IR")) <span class="currency">تومان</span>
                                                 </span>
                                             </div>
                                         </div>
@@ -2243,10 +2175,12 @@
             <!-- end of tab-pane -->
         </div>
         <!-- end of tab-content -->
+
         <!-- end of box -->
 
 
         <div class="ads-container">
+
             <!-- start of nav-tabs -->
             <nav>
                 <div class="nav nav-tabs justify-content-center" id="nav-tab" role="tablist">
@@ -2270,6 +2204,7 @@
                 </div>
             </nav>
             <!-- end of nav-tabs -->
+
             <!-- start of tab-content -->
             <div class="tab-content" id="nav-tabContent">
                 <!-- start of tab-pane -->
@@ -2459,7 +2394,9 @@
                 <!-- end of tab-pane -->
             </div>
             <!-- end of tab-content -->
+
         </div>
+
     </div>
 
     <!-- start of quick-view-modal -->

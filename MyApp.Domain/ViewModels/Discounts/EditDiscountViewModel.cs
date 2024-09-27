@@ -4,6 +4,8 @@ namespace MyApp.Domain.ViewModels.Discounts
 {
     public class EditDiscountViewModel
     {
+        #region Properties
+
         public int Id { get; set; }
 
         [Required]
@@ -16,9 +18,13 @@ namespace MyApp.Domain.ViewModels.Discounts
 
         [Required]
         [MaxLength(50)]
-        public string DiscountCode { get; set; } 
+        public string DiscountCode { get; set; }
+
+        [Required]
+        public int UsableCount { get; set; }
 
         public bool IsActive { get; set; } = true;
 
+        #endregion
     }
 }

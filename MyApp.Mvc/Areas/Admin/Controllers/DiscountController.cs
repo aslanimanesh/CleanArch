@@ -1,24 +1,27 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MyApp.Application.Interfaces;
 using MyApp.Domain.Models;
-using MyApp.Domain.ViewModels;
 using MyApp.Domain.ViewModels.AssignDiscount;
 using MyApp.Domain.ViewModels.Discounts;
 using MyApp.Domain.ViewModels.Products;
+using MyApp.Domain.ViewModels.Users;
 
 namespace MyApp.Mvc.Areas.Admin.Controllers
 {
     public class DiscountController : AdminBaseController
     {
+        #region Fields
         private readonly IDiscountService _discountService;
         private readonly IProductService _productService;
         private readonly IUserService _userService;
         private readonly IDiscountAssignmentToProductService _discountAssignmentToProductService;
         private readonly IDiscountAssignmentToUserService _discountAssignmentToUserService;
+        #endregion
 
+        #region Constructor
         public DiscountController(IDiscountService discountService, IProductService productService, IUserService userService,
-            IDiscountAssignmentToProductService discountAssignmentToProductService, IDiscountAssignmentToUserService discountAssignmentToUserService
-            )
+          IDiscountAssignmentToProductService discountAssignmentToProductService, IDiscountAssignmentToUserService discountAssignmentToUserService
+          )
         {
             _discountService = discountService;
             _productService = productService;
@@ -26,7 +29,11 @@ namespace MyApp.Mvc.Areas.Admin.Controllers
             _discountAssignmentToProductService = discountAssignmentToProductService;
             _discountAssignmentToUserService = discountAssignmentToUserService;
         }
+        #endregion
 
+        #region Actions
+
+        #region List
         // GET: DiscountController
         public async Task<ActionResult> Index()
         {
@@ -38,13 +45,16 @@ namespace MyApp.Mvc.Areas.Admin.Controllers
                 DiscountCode = discount.DiscountCode,
                 StartDate = discount.StartDate,
                 EndDate = discount.EndDate,
+                UsableCount = discount.UsableCount,
                 IsActive = discount.IsActive,
 
             }).ToList();
 
             return View(discountViewModels);
         }
+        #endregion
 
+        #region Details
         // GET: DiscountController/Details/5
         public async Task<ActionResult> Details(int id)
         {
@@ -61,12 +71,15 @@ namespace MyApp.Mvc.Areas.Admin.Controllers
                 DiscountCode = discount.DiscountCode,
                 StartDate = discount.StartDate,
                 EndDate = discount.EndDate,
+                UsableCount = discount.UsableCount,
                 IsActive = discount.IsActive,
             };
 
             return View(viewModel);
         }
+        #endregion
 
+        #region Create
         // GET: DiscountController/Create
         public IActionResult Create()
         {
@@ -76,25 +89,35 @@ namespace MyApp.Mvc.Areas.Admin.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(CreateDiscountViewModel viewModel)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                var discount = new Discount
-                {
-                    DiscountPercentage = viewModel.DiscountPercentage,
-                    DiscountCode = viewModel.DiscountCode,
-                    StartDate = viewModel.StartDate,
-                    EndDate = viewModel.EndDate,
-                    IsActive = true,
-
-                };
-
-                await _discountService.AddAsync(discount);
-                return RedirectToAction(nameof(Index));
+                return View(viewModel);
             }
 
-            return View(viewModel);
+            if (await _discountService.IsExistDiscountCode(viewModel.DiscountCode))
+            {
+                ModelState.AddModelError("DiscountCode", "این کد تخفیف قبلا ثبت شده است");
+                return View(viewModel);
+            }
+
+            var discount = new Discount
+            {
+                DiscountPercentage = viewModel.DiscountPercentage,
+                DiscountCode = viewModel.DiscountCode,
+                StartDate = viewModel.StartDate,
+                EndDate = viewModel.EndDate,
+                UsableCount = viewModel.UsableCount,
+                IsActive = true,
+            };
+
+            await _discountService.AddAsync(discount);
+
+            return RedirectToAction(nameof(Index));
         }
 
+        #endregion
+
+        #region Edit
         // GET: DiscountController/Edit/5
         public async Task<ActionResult> Edit(int id)
         {
@@ -111,8 +134,8 @@ namespace MyApp.Mvc.Areas.Admin.Controllers
                 DiscountCode = discount.DiscountCode,
                 StartDate = discount.StartDate,
                 EndDate = discount.EndDate,
+                UsableCount = discount.UsableCount,
                 IsActive = discount.IsActive,
-
             };
 
             return View(viewModel);
@@ -130,6 +153,7 @@ namespace MyApp.Mvc.Areas.Admin.Controllers
                     DiscountCode = viewModel.DiscountCode,
                     StartDate = viewModel.StartDate,
                     EndDate = viewModel.EndDate,
+                    UsableCount= viewModel.UsableCount,
                     IsActive = viewModel.IsActive,
                 };
 
@@ -139,7 +163,9 @@ namespace MyApp.Mvc.Areas.Admin.Controllers
 
             return View(viewModel);
         }
+        #endregion
 
+        #region Delete
         // GET: DiscountController/Delete/5
         public async Task<ActionResult> Delete(int id)
         {
@@ -160,7 +186,9 @@ namespace MyApp.Mvc.Areas.Admin.Controllers
 
             return RedirectToAction(nameof(Index));
         }
+        #endregion
 
+        #region AssignDiscountToProduct
         // GET: DiscountController/AssignToProduct/5
         public async Task<ActionResult> AssignToProduct(int id)
         {
@@ -228,7 +256,9 @@ namespace MyApp.Mvc.Areas.Admin.Controllers
 
             return View(model);
         }
+        #endregion
 
+        #region AssignDiscountToUser
         // GET: DiscountController/AssignToUser/5
         public async Task<ActionResult> AssignToUser(int id)
         {
@@ -295,7 +325,9 @@ namespace MyApp.Mvc.Areas.Admin.Controllers
 
             return View(model);
         }
+        #endregion
 
+        #endregion
 
     }
 }
