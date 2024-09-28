@@ -8,15 +8,13 @@ namespace MyApp.Domain.ViewModels.Discounts
 
         [Required]
         [Range(0, 100)]
-        public decimal DiscountPercentage { get; set; }
+        public int DiscountPercentage { get; set; }
 
         public DateTime? StartDate { get; set; } = null;
 
         public DateTime? EndDate { get; set; } = null;
 
-        [Required]
-        [MaxLength(50)]
-        public string DiscountCode { get; set; }
+        public string? DiscountCode { get; set; } = null;
 
         [Required]
         public int UsableCount { get; set; }

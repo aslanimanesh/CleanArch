@@ -28,7 +28,7 @@
         @foreach (var discount in Model)
         {
             <tr>
-                <td>@discount.DiscountCode</td>
+                <td>@(discount?.DiscountCode ?? "تعریف نشده")</td>
                 <td>@discount.DiscountPercentage %</td>
                 <td>@(discount.StartDate.HasValue ? discount.StartDate.Value.ToString("yyyy-MM-dd") : "تعریف نشده")</td>
                 <td>@(discount.EndDate.HasValue ? discount.EndDate.Value.ToString("yyyy-MM-dd") : "تعریف نشده")</td>
