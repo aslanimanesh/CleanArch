@@ -64,12 +64,22 @@
         </td>
 
         <td colspan="1">
-            <form asp-controller="Payment" asp-action="Pay" method="post">
-                <input type="hidden" name="orderId" value="@ViewBag.OrderId" />
-                <input type="hidden" name="userId" value="@ViewBag.UserId" />
-                <input type="hidden" name="amount" value="@ViewBag.Sum" />
-                <input type="submit" class="btn btn-success btn-block" value="تایید و پرداخت نهایی" />
-            </form>
+            @if (ViewBag.Sum > 0)
+            {
+                <form asp-controller="Payment" asp-action="Pay" method="post">
+                    <input type="hidden" name="orderId" value="@ViewBag.OrderId" />
+                    <input type="hidden" name="userId" value="@ViewBag.UserId" />
+                    <input type="hidden" name="amount" value="@ViewBag.Sum" />
+                    <input type="submit" class="btn btn-success btn-block" value="تایید و پرداخت نهایی" />
+                </form>
+            }
+            else
+            {
+                <form>
+                    <input type="submit" class="btn btn-success btn-block" value="تایید و پرداخت نهایی" />
+                </form>
+            }
+
         </td>
     </tr>
 </table>

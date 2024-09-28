@@ -34,6 +34,10 @@
             <div class="page-header--top-left">
                 <ul class="nav nav-light justify-content-end">
 
+                    <li class="nav-item">
+                        <a class="nav-link" href="/">صفحه اصلی</a>
+                    </li>
+
                     @if (User.Identity.IsAuthenticated)
                     {
                         <li class="nav-item">
@@ -52,6 +56,8 @@
                             <a class="nav-link" href="/Login">ورود</a>
                         </li>
                     }
+                  
+
                     <li class="nav-item">
                         <a class="nav-link" href="#">وبلاگ</a>
                     </li>

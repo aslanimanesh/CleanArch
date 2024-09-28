@@ -70,13 +70,13 @@ namespace MyApp.Mvc.Areas.Admin.Controllers
             }
 
 
-            if (await _userService.IsExistUserName(viewModel.UserName, null))
+            if (await _userService.IsExistUserName(viewModel.UserName.Trim(), null))
             {
                 ModelState.AddModelError("UserName", "نام کاربری وارد شده قبلا ثبت نام کرده است");
                 return View(viewModel);
             }
 
-            if (await _userService.IsExistEmail(viewModel.Email, null))
+            if (await _userService.IsExistEmail(viewModel.Email.Trim().ToLower(), null))
             {
                 ModelState.AddModelError("Email", "ایمیل وارد شده قبلا ثبت نام کرده است");
                 return View(viewModel);
@@ -135,13 +135,13 @@ namespace MyApp.Mvc.Areas.Admin.Controllers
                 return View(viewModel);
             }
 
-            if (await _userService.IsExistUserName(viewModel.UserName, viewModel.Id))
+            if (await _userService.IsExistUserName(viewModel.UserName.Trim(), viewModel.Id))
             {
                 ModelState.AddModelError("UserName", "نام کاربری وارد شده قبلا ثبت نام کرده است");
                 return View(viewModel);
             }
 
-            if (await _userService.IsExistEmail(viewModel.Email, viewModel.Id))
+            if (await _userService.IsExistEmail((viewModel.Email).Trim().ToLower(), viewModel.Id))
             {
                 ModelState.AddModelError("Email", "ایمیل وارد شده قبلا ثبت نام کرده است");
                 return View(viewModel);
