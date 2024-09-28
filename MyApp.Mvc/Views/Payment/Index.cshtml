@@ -4,13 +4,10 @@
 
 <h2>پرداخت</h2>
 
-<form asp-action="Pay" method="post">
-  
-
-    <button type="submit">پرداخت</button>
-</form>
-
 @if (!string.IsNullOrEmpty(ViewBag.Message))
 {
-    <p>@ViewBag.Message</p>
+    <div class="alert alert-warning">
+        <p>@ViewBag.Message</p>
+    </div>
+  
 }

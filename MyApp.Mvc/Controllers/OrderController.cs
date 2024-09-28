@@ -1,41 +1,46 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using MyApp.Application.Interfaces;
 using MyApp.Domain.Models;
-using MyApp.Domain.ViewModels.Order;
-using MyApp.Infa.Data.Context;
+using MyApp.Domain.ViewModels.Orders;
 using System.Security.Claims;
-using ZarinpalSandbox;
 
 namespace MyApp.Mvc.Controllers
 {
     public class OrderController : Controller
     {
+        #region Fields
         private readonly IOrderService _orderService;
         private readonly IOrderDetailsService _orderDetailsService;
         private readonly IProductService _productService;
         private readonly IDiscountService _discountService;
-        private readonly MyAppDbContext _dbContext;
+        #endregion
 
+        #region Constructor
         public OrderController(IOrderService orderService, IOrderDetailsService orderDetailsService,
-            IProductService productService , IDiscountService discountService ,MyAppDbContext  dbContext)
+          IProductService productService, IDiscountService discountService)
         {
             _orderService = orderService;
             _orderDetailsService = orderDetailsService;
             _productService = productService;
             _discountService = discountService;
-            _dbContext = dbContext;
-            
         }
-        [Authorize]
+        #endregion
+
+        #region Public Methods
+
+        #region AddToCart
+        [Authorize] 
         public async Task<IActionResult> AddToCart(int id)
         {
+            // Get User Id From Current User
             int CurrentUserID = Convert.ToInt32(User.FindFirstValue(ClaimTypes.NameIdentifier));
 
+            // Check if the user already has a pending order
             Order order = await _orderService.HasPendingOrder(CurrentUserID);
             if (order == null)
             {
+                // If no pending order, create a new order
                 order = new Order()
                 {
                     UserId = CurrentUserID,
@@ -43,14 +48,17 @@ namespace MyApp.Mvc.Controllers
                     IsFinaly = false,
                     Sum = 0,
                 };
-                
+
+                // Retrieve the product to be added to the order
                 var product = await _productService.GetByIdAsync(id);
                 if (product == null)
                 {
                     return NotFound();
                 }
 
+                // Add the new order to the database
                 await _orderService.AddAsync(order);
+                // Add the product as an order detail
                 await _orderDetailsService.AddAsync(new OrderDetail()
                 {
                     OrderId = order.Id,
@@ -59,19 +67,20 @@ namespace MyApp.Mvc.Controllers
                     ProductId = id
                 });
 
+                // Update the total sum of the order
                 await UpdateSumOrder(order.Id);
-
             }
             else
             {
+                // If there is a pending order, check if the product already exists in the order
                 var details = await _orderDetailsService.ExistProductInOrderDetail(order.Id, id);
                 if (details == null)
                 {
-                   
+                    // If product doesn't exist, add it to the order details
                     var product = await _productService.GetByIdAsync(id);
                     if (product == null)
                     {
-                        return NotFound(); 
+                        return NotFound();
                     }
 
                     await _orderDetailsService.AddAsync(new OrderDetail()
@@ -84,168 +93,139 @@ namespace MyApp.Mvc.Controllers
                 }
                 else
                 {
+                    // If product exists, increment the count
                     details.Count += 1;
                     await _orderDetailsService.UpdateAsync(details);
                 }
-
             }
 
+            // Update the total sum of the order
             await UpdateSumOrder(order.Id);
 
-            return RedirectToAction("ShowOrder", "Order");
-
+            return RedirectToAction("ShowOrder", "Order"); // Redirect to the order display
         }
+        #endregion
 
-        [Authorize]
+        #region ShowOrder
+        [Authorize] 
         public async Task<IActionResult> ShowOrder()
         {
+            // Retrieve the current user Id
             int CurrentUserID = Convert.ToInt32(User.FindFirstValue(ClaimTypes.NameIdentifier));
 
+            // Check if the user has a pending order
             Order order = await _orderService.HasPendingOrder(CurrentUserID);
-            
 
+            // List to hold order details to display
             List<ShowOrderViewModel> _list = new List<ShowOrderViewModel>();
             if (order != null)
             {
+                // Retrieve all details for the order
                 var details = await _orderDetailsService.GetAllOrderDetailByOrderId(order.Id);
                 foreach (var item in details)
                 {
+                    // Retrieve the product for each order detail
                     var product = await _productService.GetByIdAsync(item.ProductId);
 
+                    // Add the order detail information to the view model list
                     _list.Add(new ShowOrderViewModel()
                     {
                         Count = item.Count,
                         ImageName = product.ImageName,
                         OrderDetailId = item.Id,
                         Price = item.Price,
-                        Sum = item.Count * item.Price,
+                        Sum = item.Count * item.Price, // Calculate total for this item
                         Title = product.Title
                     });
-
                 }
-                ViewBag.OrderID = order.Id;
+                // Pass additional order information to the view
+                ViewBag.OrderId = order.Id;
                 ViewBag.Sum = order.Sum;
+                ViewBag.UserId = order.UserId;
             }
 
-            return View(_list);
+            return View(_list); // Return the view with order details
         }
+        #endregion
 
+        #region Delete
         public async Task<IActionResult> Delete(int id)
         {
-           
+            // Retrieve the order detail to be deleted
             var orderDetail = await _orderDetailsService.GetByIdAsync(id);
-            await _orderDetailsService.DeleteAsync(id);
-            await UpdateSumOrder(orderDetail.OrderId);
+            await _orderDetailsService.DeleteAsync(id); // Delete the order detail
+            await UpdateSumOrder(orderDetail.OrderId); // Update the order sum
 
-            return RedirectToAction("ShowOrder", "Order");
+            return RedirectToAction("ShowOrder", "Order"); // Redirect to show the order
         }
+        #endregion
 
+        #region Command
         public async Task<IActionResult> Command(int id, string command)
         {
-            var orderDetail =await _orderDetailsService.GetByIdAsync(id);
+            // Retrieve the order detail
+            var orderDetail = await _orderDetailsService.GetByIdAsync(id);
 
+            // Process the command for updating the order detail
             switch (command)
             {
-                case "up":
+                case "up": // Increment the count
                     {
                         orderDetail.Count += 1;
                         await _orderDetailsService.UpdateAsync(orderDetail);
                         break;
                     }
-                case "down":
+                case "down": // Decrement the count
                     {
                         orderDetail.Count -= 1;
                         if (orderDetail.Count == 0)
                         {
+                            // If count reaches zero, delete the order detail
                             await _orderDetailsService.DeleteAsync(orderDetail.Id);
                         }
                         else
                         {
                             await _orderDetailsService.UpdateAsync(orderDetail);
                         }
-
                         break;
                     }
             }
 
+            // Update the total sum of the order
             await UpdateSumOrder(orderDetail.OrderId);
 
-            return RedirectToAction("ShowOrder", "Order");
+            return RedirectToAction("ShowOrder", "Order"); // Redirect to show the order
         }
+        #endregion
 
+        #region UpdateSumOrder
         public async Task UpdateSumOrder(int orderId)
         {
+            // Retrieve the order
             var order = await _orderService.GetByIdAsync(orderId);
+            // Update the order sum with the total of all order details
             order.Sum = await _orderService.GetOrderTotalAsync(orderId);
-            await _orderService.UpdateAsync(order);
-
+            await _orderService.UpdateAsync(order); // Save changes to the order
         }
-        [Authorize]
+        #endregion
+
+        #region UseDiscount
+        [Authorize] // Requires user to be authenticated
         [HttpPost]
-        
         public async Task<IActionResult> UseDiscount(string discountCode, int orderId)
         {
-            
-
+            // Retrieve the current user's ID
             int userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
 
-            // اعمال تخفیف بر روی فاکتور
+            // Apply the discount to the order
             var resultMessage = await _discountService.ApplyDiscountToOrderAsync(discountCode, orderId, userId);
 
-            // نمایش نتیجه به کاربر
+            // Show the result message to the user
             TempData["DiscountResult"] = resultMessage;
-            //return RedirectToAction("Index", new { orderId });
-            return RedirectToAction("ShowOrder", "Order");
+            return RedirectToAction("ShowOrder", "Order"); // Redirect to show the order
         }
+        #endregion
 
-        [Authorize]
-        public IActionResult Payment()
-        {
-            int userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
-            var order = _dbContext.Orders
-                .Include(o => o.OrderDetails)
-                .FirstOrDefault(o => o.UserId == userId && !o.IsFinaly);
-            if (order == null)
-                return NotFound();
-
-            var payment = new Payment((int)order.OrderDetails.Sum(d => d.Price));
-            var res = payment.PaymentRequest($"پرداخت فاکتور شماره {order.Id}",
-                "http://localhost:1635/Order/OnlinePayment/" + order.Id, "Iman@Madaeny.com", "09197070750");
-            if (res.Result.Status == 100)
-            {
-                return Redirect("+" + res.Result.Authority);
-            }
-            else
-            {
-                return BadRequest();
-            }
-
-        }
-
-        public IActionResult OnlinePayment(int id)
-        {
-            if (HttpContext.Request.Query["Status"] != "" &&
-                HttpContext.Request.Query["Status"].ToString().ToLower() == "ok" &&
-                HttpContext.Request.Query["Authority"] != "")
-            {
-                string authority = HttpContext.Request.Query["Authority"].ToString();
-                var order = _dbContext.Orders.Include(o => o.OrderDetails)
-                    .FirstOrDefault(o => o.Id == id);
-                var payment = new Payment((int)order.OrderDetails.Sum(d => d.Price));
-                var res = payment.Verification(authority).Result;
-                if (res.Status == 100)
-                {
-                    order.IsFinaly = true;
-                    _dbContext.Orders.Update(order);
-                    _dbContext.SaveChanges();
-                    ViewBag.code = res.RefId;
-                    return View();
-                }
-            }
-
-            return NotFound();
-        }
-
+        #endregion
     }
 }
-

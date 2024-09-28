@@ -4,10 +4,8 @@ namespace MyApp.Domain.Interfaces
 {
     public interface IUsableUserDiscount : IGenericRepository<UsableUserDiscount>
     {
-        #region Public Methods
-
+        #region GetUsableUserDiscountAsync
         Task<UsableUserDiscount> GetUsableUserDiscountAsync(int userId, int discountId);
-
         #endregion
     }
 }

@@ -1,4 +1,4 @@
-﻿@model IEnumerable<MyApp.Domain.ViewModels.Order.ShowOrderViewModel>
+﻿@model IEnumerable<MyApp.Domain.ViewModels.Orders.ShowOrderViewModel>
 
 @{
 
@@ -64,7 +64,12 @@
         </td>
 
         <td colspan="1">
-            <a class="btn btn-success btn-block" asp-controller="Order" asp-action="Payment">تایید و پرداخت نهایی</a>
+            <form asp-controller="Payment" asp-action="Pay" method="post">
+                <input type="hidden" name="orderId" value="@ViewBag.OrderId" />
+                <input type="hidden" name="userId" value="@ViewBag.UserId" />
+                <input type="hidden" name="amount" value="@ViewBag.Sum" />
+                <input type="submit" class="btn btn-success btn-block" value="تایید و پرداخت نهایی" />
+            </form>
         </td>
     </tr>
 </table>

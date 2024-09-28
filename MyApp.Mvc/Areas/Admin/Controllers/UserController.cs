@@ -1,6 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages;
-using Microsoft.Win32;
 using MyApp.Application.Interfaces;
 using MyApp.Domain.Models;
 using MyApp.Domain.ViewModels.Users;
@@ -9,20 +7,29 @@ namespace MyApp.Mvc.Areas.Admin.Controllers
 {
     public class UserController : AdminBaseController
     {
+        #region Fields
         private readonly IUserService _userService;
+        #endregion
 
+        #region Constructor
         public UserController(IUserService userService)
         {
             _userService = userService;
         }
+        #endregion
 
+        #region Public Method
+
+        #region List
         // GET: UserController
         public async Task<ActionResult> Index(FilterUserViewModel filter)
         {
             var result = await _userService.FilterAsync(filter);
             return View(result);
         }
+        #endregion
 
+        #region Details
         // GET: UserController/Details/5
         public async Task<ActionResult> Details(int id)
         {
@@ -43,7 +50,9 @@ namespace MyApp.Mvc.Areas.Admin.Controllers
 
             return View(userDetail);
         }
+        #endregion
 
+        #region Create
         // GET: UserController/Create
         public IActionResult Create()
         {
@@ -80,7 +89,7 @@ namespace MyApp.Mvc.Areas.Admin.Controllers
                 Email = viewModel.Email,
                 UserName = viewModel.UserName,
                 Password = viewModel.Password,
-                IsActive= true,
+                IsActive = true,
             };
 
             await _userService.AddAsync(user);
@@ -88,6 +97,9 @@ namespace MyApp.Mvc.Areas.Admin.Controllers
             return RedirectToAction("Index");
         }
 
+        #endregion
+
+        #region Edit
         // GET: UserController/Edit/5
         public async Task<IActionResult> Edit(int id)
         {
@@ -106,7 +118,7 @@ namespace MyApp.Mvc.Areas.Admin.Controllers
                 Email = user.Email,
                 UserName = user.UserName,
                 Password = user.Password,
-                IsActive=user.IsActive,
+                IsActive = user.IsActive,
 
             };
 
@@ -151,6 +163,9 @@ namespace MyApp.Mvc.Areas.Admin.Controllers
             return RedirectToAction("Index");
 
         }
+        #endregion
+
+        #region Delete
 
         // GET: UserController/Delete/5
         public async Task<IActionResult> Delete(int id)
@@ -172,4 +187,8 @@ namespace MyApp.Mvc.Areas.Admin.Controllers
             return RedirectToAction(nameof(Index));
         }
     }
+    #endregion
+
+        #endregion
+
 }

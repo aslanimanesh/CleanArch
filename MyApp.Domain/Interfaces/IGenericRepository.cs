@@ -2,7 +2,8 @@
 {
     public interface IGenericRepository<T> where T : class
     {
-        #region Public Methods
+
+        #region CRUD Oprations
 
         Task<IReadOnlyList<T>> GetAllAsync();
         Task<T> GetByIdAsync(int id);
@@ -11,5 +12,6 @@
         Task DeleteAsync(T entity);
 
         #endregion
+
     }
 }

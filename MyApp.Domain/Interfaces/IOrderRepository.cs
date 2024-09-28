@@ -4,12 +4,22 @@ namespace MyApp.Domain.Interfaces
 {
     public interface IOrderRepository : IGenericRepository<Order>
     {
-        #region Public Methods
 
+        #region HasPendingOrder
         Task<Order> HasPendingOrder(int userId);
-        Task<Order> GetOrderWithDetailsAsync(int orderId);
-        Task<decimal> GetOrderTotalPriceAsync(int orderId);
-
         #endregion
+
+        #region GetOrderWithDetailsAsync
+        Task<Order> GetOrderWithDetailsAsync(int orderId);
+        #endregion
+
+        #region GetOrderTotalPriceAsync
+        Task<decimal> GetOrderTotalPriceAsync(int orderId);
+        #endregion
+
+        #region UpdatePaymentStatusAsync
+        Task UpdatePaymentStatusAsync(int orderId);
+        #endregion
+
     }
 }

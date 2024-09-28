@@ -7,84 +7,68 @@ namespace MyApp.Infa.Data.Repositories
 {
     public class OrderRepository : GenericRepository<Order>, IOrderRepository
     {
+        #region Fields
+
         private readonly MyAppDbContext _dbContext;
+
+        #endregion
+
+        #region Constructor
 
         public OrderRepository(MyAppDbContext dbContext) : base(dbContext)
         {
             _dbContext = dbContext;
         }
 
-        public async Task<decimal> GetOrderTotalPriceAsync(int orderId)
-        {
-            return await _dbContext.OrderDetails
-               .Where(o => o.OrderId == orderId)
-               .Select(d => d.Count * d.Price)
-               .SumAsync();
-        }
+        #endregion
 
+        #region Public Methods
+
+        #region GetOrderWithDetailsAsync
         public async Task<Order> GetOrderWithDetailsAsync(int orderId)
         {
             return await _dbContext.Orders
-            .Include(o => o.OrderDetails)
-            .ThenInclude(od => od.Product)
-            .FirstOrDefaultAsync(o => o.Id == orderId);
+                .Include(o => o.OrderDetails)
+                .ThenInclude(od => od.Product)
+                .FirstOrDefaultAsync(o => o.Id == orderId);
         }
+        #endregion
 
+        #region HasPendingOrder
         public async Task<Order> HasPendingOrder(int userId)
         {
-            var order = _dbContext.Orders.SingleOrDefault(o => o.UserId == userId && !o.IsFinaly);
-            return order;
+            return await _dbContext.Orders
+                .SingleOrDefaultAsync(o => o.UserId == userId && !o.IsFinaly);
         }
+        #endregion
 
+        #region GetOrderTotalPriceAsync
 
-        //public DiscountUseType UseDiscount(int orderId, string code)
-        //{
-        //    var discount = _dbContext.Discounts.SingleOrDefault(d => d.DiscountCode == code);
-
-        //    if (discount == null)
-        //        return DiscountUseType.NotFound;
-
-        //    if (discount.StartDate != null && discount.StartDate < DateTime.Now)
-        //        return DiscountUseType.ExpierDate;
-
-        //    if (discount.EndDate != null && discount.EndDate >= DateTime.Now)
-        //        return DiscountUseType.ExpierDate;
-
-
-        //    if (discount.UsableCount != null && discount.UsableCount < 1)
-        //        return DiscountUseType.Finished;
-
-        //    var order = GetByIdAsync(orderId);
-
-        //    if (_dbContext.UserDiscountCodes.Any(d => d.UserId == order.UserId && d.DiscountId == discount.DiscountId))
-        //        return DiscountUseType.UserUsed;
-
-        //    int percent = (order.OrderSum * discount.DiscountPercent) / 100;
-        //    order.OrderSum = order.OrderSum - percent;
-
-        //    UpdateOrder(order);
-
-        //    if (discount.UsableCount != null)
-        //    {
-        //        discount.UsableCount -= 1;
-        //    }
-
-        //    _dbContext.Discounts.Update(discount);
-        //    _dbContext.UserDiscountCodes.Add(new UserDiscountCode()
-        //    {
-        //        UserId = order.Id,
-        //        DiscountId = discount.Id
-        //    });
-        //    _dbContext.SaveChanges();
-
-
-
-        //    return DiscountUseType.Success;
-        //}
-
-        public enum DiscountUseType
+        public async Task<decimal> GetOrderTotalPriceAsync(int orderId)
         {
-            Success, ExpierDate, NotFound, Finished, UserUsed
+            return await _dbContext.OrderDetails
+                .Where(o => o.OrderId == orderId)
+                .Select(d => d.Count * d.Price)
+                .SumAsync();
         }
+
+        #endregion
+
+        #region UpdatePaymentStatusAsync
+
+        public async Task UpdatePaymentStatusAsync(int orderId)
+        {
+            var order = await _dbContext.Orders.FindAsync(orderId);
+            if (order != null)
+            {
+                order.IsFinaly = true;
+                _dbContext.Update(order);
+                await _dbContext.SaveChangesAsync();
+            }
+        }
+
+        #endregion
+
+        #endregion
     }
 }

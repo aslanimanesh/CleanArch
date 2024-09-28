@@ -4,11 +4,14 @@ namespace MyApp.Domain.Interfaces
 {
     public interface IDiscountRepository : IGenericRepository<Discount>
     {
-        #region Public Methods
 
+        #region GetByDiscountCodeAsync
         Task<Discount> GetByDiscountCodeAsync(string discountCode);
-        Task<bool> IsExistDiscountCode(string discountCode);
-
         #endregion
+
+        #region IsExistDiscountCode
+        Task<bool> IsExistDiscountCode(string discountCode);
+        #endregion
+
     }
 }

@@ -1,33 +1,36 @@
-﻿using System.Net.Http;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using MyApp.Domain.Models;
+﻿using Microsoft.AspNetCore.Mvc;
+using MyApp.Application.Interfaces;
 using Newtonsoft.Json;
+using System.Text;
 
 public class PaymentController : Controller
 {
-    private const string MerchantId = "cdb9caf7-008b-439c-b6e0-3f4bd44b2476"; // کد مرچنت
+    
+    private const string MerchantId = "cdb9caf7-008b-439c-b6e0-3f4bd44b2476";
     private const string PaymentUrl = "https://payment.zarinpal.com/pg/v4/payment/request.json";
 
-    [HttpGet]
-    public IActionResult Index()
+    private readonly IOrderService _orderService;
+
+    public PaymentController(IOrderService orderService)
     {
-        return View();
+        _orderService = orderService;
     }
 
-    public async Task<IActionResult> Pay()
+    [HttpPost]
+    public async Task<IActionResult> Pay(int OrderId,int UserId,decimal Amount)
     {
+        int amountToRial = (int)(Amount * 10);
+
         var paymentRequest = new
         {
-            merchant_id = "cdb9caf7-008b-439c-b6e0-3f4bd44b2476", 
-            amount = 20000, 
-            callback_url = "https://localhost:7250/payment/verify", 
-            description = "Payment for order #1234",  
+            merchant_id = "cdb9caf7-008b-439c-b6e0-3f4bd44b2476",
+            amount = amountToRial,
+            callback_url = $"https://localhost:7250/payment/verify?OrderId={OrderId}",
+            description = "Payment for order #1234",
             metadata = new
             {
                 email = "test@example.com",
-                mobile = "09123456789"
+                mobile = "09121111111"
             }
         };
 
@@ -48,7 +51,6 @@ public class PaymentController : Controller
             }
             else
             {
-                // در صورت عدم موفقیت، پیام خطا را نمایش دهید
                 var errorResponse = JsonConvert.DeserializeObject<dynamic>(result);
                 ViewBag.Error = errorResponse.errors.message;
                 return View("Error");
@@ -57,50 +59,47 @@ public class PaymentController : Controller
     }
 
 
-  
 
-[HttpGet]
-public async Task<IActionResult> Verify(string Authority, int amount)
-{
-    string verifyUrl = "https://api.zarinpal.com/pg/v4/payment/verify.json";
 
-    var verifyRequest = new
+    [HttpGet]
+    public async Task<IActionResult> Verify(string authority, int orderId)
     {
-        merchant_id = MerchantId,
-        authority = Authority,
-        amount = 20000
-    };
 
-    var json = JsonConvert.SerializeObject(verifyRequest);
-    var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
+        string verifyUrl = "https://api.zarinpal.com/pg/v4/payment/verify.json";
 
-    using (var httpClient = new HttpClient())
-    {
-        var response = await httpClient.PostAsync(verifyUrl, httpContent);
-        var responseString = await response.Content.ReadAsStringAsync();
-
-        // تجزیه محتوای JSON دریافتی
-        dynamic responseObject = JsonConvert.DeserializeObject(responseString);
-
-        // چاپ پاسخ برای دیباگینگ
-        Console.WriteLine(responseString);
-
-        // بررسی کد موفقیت
-        if (responseObject.data.code == 100) // اگر کد 100 در سطح ریشه باشد
+        var verifyRequest = new
         {
-            ViewBag.Message = "پرداخت با موفقیت انجام شد.";
-        }
-        else if (responseObject.data.code == 101)
+            merchant_id = MerchantId,
+            authority = authority,
+            amount = 12000
+        };
+
+        var json = JsonConvert.SerializeObject(verifyRequest);
+        var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
+
+        using (var httpClient = new HttpClient())
         {
-            ViewBag.Message = "این تراکنش قبلاً تأیید شده است.";
+            var response = await httpClient.PostAsync(verifyUrl, httpContent);
+            var responseString = await response.Content.ReadAsStringAsync();
+
+            dynamic responseObject = JsonConvert.DeserializeObject(responseString);
+
+            if (responseObject.data.code == 100)
+            {
+                await _orderService.UpdatePaymentStatusAsync(orderId);
+                ViewBag.Message = "پرداخت با موفقیت انجام شد.";
+            }
+            else if (responseObject.data.code == 101)
+            {
+                ViewBag.Message = "این تراکنش قبلاً تأیید شده است.";
+            }
+            else
+            {
+                ViewBag.Message = "خطا در تأیید تراکنش: " + responseObject.message;
+            }
         }
-        else
-        {
-            ViewBag.Message = "خطا در تأیید تراکنش: " + responseObject.message;
-        }
+
+        return View("Index");
     }
-
-    return View("Index");
-}
 
 }

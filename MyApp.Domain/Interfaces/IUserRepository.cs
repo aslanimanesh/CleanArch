@@ -6,7 +6,6 @@ namespace MyApp.Domain.Interfaces
     public interface IUserRepository : IGenericRepository<User>
     {
         #region User Management
-
         Task<FilterUserViewModel> FilterAsync(FilterUserViewModel model);
         Task<User> LoginUser(LoginViewModel login);
 

@@ -1,8 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
-using MyApp.Application.Interfaces;
+﻿using MyApp.Application.Interfaces;
 using MyApp.Domain.Interfaces;
 using MyApp.Domain.Models;
-using System.Threading.Tasks;
 
 namespace MyApp.Application.Services
 {
@@ -39,6 +37,13 @@ namespace MyApp.Application.Services
         public async Task<Order> HasPendingOrder(int userId)
         {
             return await _orderRepository.HasPendingOrder(userId);
+        }
+        #endregion
+
+        #region UpdatePaymentStatusAsync
+        public async Task UpdatePaymentStatusAsync(int orderId)
+        {
+            await _orderRepository.UpdatePaymentStatusAsync(orderId);
         }
         #endregion
 

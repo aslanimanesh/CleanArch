@@ -7,12 +7,24 @@ namespace MyApp.Mvc.Areas.Admin.Controllers
 {
     public class ProductController : AdminBaseController
     {
+        #region Fields
+
         private readonly IProductService _productService;
+
+        #endregion
+
+        #region Constructor
 
         public ProductController(IProductService productService)
         {
             _productService = productService;
         }
+
+        #endregion
+
+        #region Public Methods
+
+        #region List
 
         // GET: ProductController
         public async Task<IActionResult> Index()
@@ -29,6 +41,10 @@ namespace MyApp.Mvc.Areas.Admin.Controllers
             return View(productViewModels);
         }
 
+        #endregion
+
+        #region Details 
+
         // GET: ProductController/Details/5
         public async Task<IActionResult> Details(int id)
         {
@@ -39,6 +55,10 @@ namespace MyApp.Mvc.Areas.Admin.Controllers
             }
             return View(product);
         }
+
+        #endregion
+
+        #region Create 
 
         // GET: ProductController/Create
         public IActionResult Create()
@@ -67,6 +87,10 @@ namespace MyApp.Mvc.Areas.Admin.Controllers
 
             return View(viewModel);
         }
+
+        #endregion
+
+        #region Edit 
 
         // GET: ProductController/Edit/5
         public async Task<IActionResult> Edit(int id)
@@ -112,6 +136,10 @@ namespace MyApp.Mvc.Areas.Admin.Controllers
             return View(viewModel);
         }
 
+        #endregion
+
+        #region Delete
+
         // GET: ProductController/Delete/5
         public async Task<IActionResult> Delete(int id)
         {
@@ -136,11 +164,13 @@ namespace MyApp.Mvc.Areas.Admin.Controllers
             }
 
             await _productService.DeleteAsync(id);
-
             TempData["SuccessMessage"] = "Product deleted successfully.";
             return RedirectToAction(nameof(Index));
         }
 
+        #endregion
+
+        #endregion
 
     }
 }
