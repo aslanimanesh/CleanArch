@@ -12,8 +12,8 @@ using MyApp.Infa.Data.Context;
 namespace MyApp.Infa.Data.Migrations
 {
     [DbContext(typeof(MyAppDbContext))]
-    [Migration("20240928082021_ChangeDiscountModel")]
-    partial class ChangeDiscountModel
+    [Migration("20240928215643_editDiscountModel")]
+    partial class editDiscountModel
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -45,13 +45,19 @@ namespace MyApp.Infa.Data.Migrations
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
+                    b.Property<bool>("IsGeneralForProducts")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsGeneralForUsers")
+                        .HasColumnType("bit");
+
                     b.Property<DateTime?>("StartDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("Type")
+                    b.Property<int?>("UsableCount")
                         .HasColumnType("int");
 
-                    b.Property<int?>("UsableCount")
+                    b.Property<int?>("UsedCount")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -157,7 +163,23 @@ namespace MyApp.Infa.Data.Migrations
                     b.ToTable("ProductDiscounts");
                 });
 
-            modelBuilder.Entity("MyApp.Domain.Models.UsableUserDiscount", b =>
+            modelBuilder.Entity("MyApp.Domain.Models.UsedProductDiscount", b =>
+                {
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("DiscountId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.HasKey("UserId", "DiscountId");
+
+                    b.ToTable("UsedProductDiscounts");
+                });
+
+            modelBuilder.Entity("MyApp.Domain.Models.UsedUserDiscount", b =>
                 {
                     b.Property<int>("UserId")
                         .HasColumnType("int");
@@ -167,7 +189,7 @@ namespace MyApp.Infa.Data.Migrations
 
                     b.HasKey("UserId", "DiscountId");
 
-                    b.ToTable("UsableUserDiscounts");
+                    b.ToTable("UsedUserDiscounts");
                 });
 
             modelBuilder.Entity("MyApp.Domain.Models.User", b =>

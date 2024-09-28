@@ -18,6 +18,10 @@ namespace MyApp.Domain.ViewModels.Discounts
 
         public int? UsableCount { get; set; } = null;
 
+        public bool IsGeneralForProducts { get; set; } = false;
+
+        public bool IsGeneralForUsers { get; set; } = false;
+
         public bool IsActive { get; set; } = true;
 
         #endregion

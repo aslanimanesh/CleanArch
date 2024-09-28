@@ -34,6 +34,16 @@
         <span asp-validation-for="UsableCount" class="text-danger"></span>
     </div>
     <div class="form-group">
+        <label asp-for="IsGeneralForUsers" class="control-label"></label>
+        <input asp-for="IsGeneralForUsers" type="checkbox" />
+        <span asp-validation-for="IsGeneralForUsers" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="IsGeneralForProducts" class="control-label"></label>
+        <input asp-for="IsGeneralForProducts" type="checkbox" />
+        <span asp-validation-for="IsGeneralForProducts" class="text-danger"></span>
+    </div>
+    <div class="form-group">
         <label asp-for="IsActive" class="control-label"></label>
         <input asp-for="IsActive" type="checkbox" />
         <span asp-validation-for="IsActive" class="text-danger"></span>

@@ -18,9 +18,15 @@ namespace MyApp.Domain.Models
         public string? DiscountCode { get; set; } = null;
  
         public int? UsableCount { get; set; } = null;
+
         public int? UsedCount { get; set; } = null;
 
+        public bool IsGeneralForProducts { get; set; }=false;
+
+        public bool IsGeneralForUsers { get; set; } =false;
+
         public bool IsActive { get; set; } = true;
+
 
         #endregion
 

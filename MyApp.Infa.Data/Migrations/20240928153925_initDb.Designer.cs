@@ -12,8 +12,8 @@ using MyApp.Infa.Data.Context;
 namespace MyApp.Infa.Data.Migrations
 {
     [DbContext(typeof(MyAppDbContext))]
-    [Migration("20240926073012_addUsebleFieldToDiscount")]
-    partial class addUsebleFieldToDiscount
+    [Migration("20240928153925_initDb")]
+    partial class initDb
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -34,12 +34,10 @@ namespace MyApp.Infa.Data.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("DiscountCode")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<decimal>("DiscountPercentage")
-                        .HasColumnType("decimal(18,2)");
+                    b.Property<int>("DiscountPercentage")
+                        .HasColumnType("int");
 
                     b.Property<DateTime?>("EndDate")
                         .HasColumnType("datetime2");
@@ -50,7 +48,10 @@ namespace MyApp.Infa.Data.Migrations
                     b.Property<DateTime?>("StartDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("UsableCount")
+                    b.Property<int?>("UsableCount")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("UsedCount")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -154,6 +155,35 @@ namespace MyApp.Infa.Data.Migrations
                     b.HasIndex("DiscountId");
 
                     b.ToTable("ProductDiscounts");
+                });
+
+            modelBuilder.Entity("MyApp.Domain.Models.UsedProductDiscount", b =>
+                {
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("DiscountId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.HasKey("UserId", "DiscountId");
+
+                    b.ToTable("UsedProductDiscounts");
+                });
+
+            modelBuilder.Entity("MyApp.Domain.Models.UsedUserDiscount", b =>
+                {
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("DiscountId")
+                        .HasColumnType("int");
+
+                    b.HasKey("UserId", "DiscountId");
+
+                    b.ToTable("UsedUserDiscounts");
                 });
 
             modelBuilder.Entity("MyApp.Domain.Models.User", b =>

@@ -17,10 +17,12 @@ namespace MyApp.Infa.Data.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    DiscountPercentage = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    DiscountPercentage = table.Column<int>(type: "int", nullable: false),
                     StartDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     EndDate = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    DiscountCode = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    DiscountCode = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    UsableCount = table.Column<int>(type: "int", nullable: true),
+                    UsedCount = table.Column<int>(type: "int", nullable: true),
                     IsActive = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
@@ -58,6 +60,31 @@ namespace MyApp.Infa.Data.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Products", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "UsedProductDiscounts",
+                columns: table => new
+                {
+                    UserId = table.Column<int>(type: "int", nullable: false),
+                    DiscountId = table.Column<int>(type: "int", nullable: false),
+                    ProductId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UsedProductDiscounts", x => new { x.UserId, x.DiscountId });
+                });
+
+            migrationBuilder.CreateTable(
+                name: "UsedUserDiscounts",
+                columns: table => new
+                {
+                    UserId = table.Column<int>(type: "int", nullable: false),
+                    DiscountId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UsedUserDiscounts", x => new { x.UserId, x.DiscountId });
                 });
 
             migrationBuilder.CreateTable(
@@ -183,6 +210,12 @@ namespace MyApp.Infa.Data.Migrations
 
             migrationBuilder.DropTable(
                 name: "ProductDiscounts");
+
+            migrationBuilder.DropTable(
+                name: "UsedProductDiscounts");
+
+            migrationBuilder.DropTable(
+                name: "UsedUserDiscounts");
 
             migrationBuilder.DropTable(
                 name: "UserDiscounts");

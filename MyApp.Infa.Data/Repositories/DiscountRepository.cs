@@ -21,7 +21,7 @@ namespace MyApp.Infa.Data.Repositories
         #region Public Methods
 
         #region GetByDiscountCodeAsync
-        public async Task<Discount> GetByDiscountCodeAsync(string discountCode)
+        public async Task<Discount> GetDiscountByDiscountCodeAsync(string discountCode)
         {
             return await _dbContext.Discounts.SingleOrDefaultAsync(d => d.DiscountCode == discountCode);
         }
@@ -31,7 +31,7 @@ namespace MyApp.Infa.Data.Repositories
         #region IsExistDiscountCode
         public async Task<bool> IsExistDiscountCode(string discountCode)
         {
-            return _dbContext.Discounts.Any(d=> d.DiscountCode == discountCode);
+            return await _dbContext.Discounts.AnyAsync(d=> d.DiscountCode == discountCode);
         }
         #endregion
 

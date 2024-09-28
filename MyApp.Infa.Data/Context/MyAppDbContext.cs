@@ -36,12 +36,6 @@ namespace MyApp.Infa.Data.Context
                 .HasKey(ud => new { ud.UserId, ud.DiscountId });
 
 
-            modelBuilder.Entity<UsedProductDiscount>()
-                .HasKey(up => new {up.UserId, up.DiscountId});
-
-            modelBuilder.Entity<UsedUserDiscount>()
-                .HasKey(ud => new { ud.UserId , ud.DiscountId });
-
             base.OnModelCreating(modelBuilder);
         }
 

@@ -107,6 +107,8 @@ namespace MyApp.Mvc.Areas.Admin.Controllers
                 StartDate = viewModel.StartDate,
                 EndDate = viewModel.EndDate,
                 UsableCount = viewModel.UsableCount,
+                IsGeneralForProducts = viewModel.IsGeneralForProducts,
+                IsGeneralForUsers = viewModel.IsGeneralForUsers,
                 IsActive = true,
             };
 
@@ -135,6 +137,8 @@ namespace MyApp.Mvc.Areas.Admin.Controllers
                 StartDate = discount.StartDate,
                 EndDate = discount.EndDate,
                 UsableCount = discount.UsableCount,
+                IsGeneralForProducts = discount.IsGeneralForProducts,
+                IsGeneralForUsers = discount.IsGeneralForUsers,
                 IsActive = discount.IsActive,
             };
 
@@ -154,6 +158,8 @@ namespace MyApp.Mvc.Areas.Admin.Controllers
                     StartDate = viewModel.StartDate,
                     EndDate = viewModel.EndDate,
                     UsableCount= viewModel.UsableCount,
+                    IsGeneralForUsers= viewModel.IsGeneralForUsers,
+                    IsGeneralForProducts= viewModel.IsGeneralForProducts,
                     IsActive = viewModel.IsActive,
                 };
 

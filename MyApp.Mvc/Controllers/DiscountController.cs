@@ -21,16 +21,15 @@ namespace MyApp.Mvc.Controllers
         #region UseDiscount
         [Authorize] // Requires user to be authenticated
         [HttpPost]
-        public async Task<IActionResult> UseDiscount(string discountCode, int orderId)
+        public async Task<IActionResult> UseDiscount(string discountCode, int orderId , int userId)
         {
-            // Retrieve the current user's ID
-            int userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
 
             // Apply the discount to the order
             var resultMessage = await _discountService.ApplyDiscountToOrderAsync(discountCode, orderId, userId);
 
             // Show the result message to the user
             TempData["DiscountResult"] = resultMessage;
+
             return RedirectToAction("ShowOrder", "Order"); // Redirect to show the order
         }
         #endregion

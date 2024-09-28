@@ -4,10 +4,14 @@ namespace MyApp.Application.Interfaces
 {
     public interface IDiscountService : IGenericService<Discount>
     {
-        #region Discount Operations
+        #region ApplyDiscountToOrderAsync
         Task<string> ApplyDiscountToOrderAsync(string discountCode, int orderId, int userId);
-        Task<bool> IsExistDiscountCode(string discountCode);
-        
         #endregion
+
+        #region Check DiscountCode duplicate 
+        Task<bool> IsExistDiscountCode(string discountCode);
+
+        #endregion
+
     }
 }
