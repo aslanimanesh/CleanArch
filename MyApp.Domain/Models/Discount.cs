@@ -16,9 +16,9 @@ namespace MyApp.Domain.Models
         public DateTime? EndDate { get; set; } = null;
 
         public string? DiscountCode { get; set; } = null;
-
-        [Required]
-        public int UsableCount { get; set; }
+ 
+        public int? UsableCount { get; set; } = null;
+        public int? UsedCount { get; set; } = null;
 
         public bool IsActive { get; set; } = true;
 

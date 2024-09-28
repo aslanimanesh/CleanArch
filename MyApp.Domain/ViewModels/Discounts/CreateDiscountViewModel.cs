@@ -16,8 +16,7 @@ namespace MyApp.Domain.ViewModels.Discounts
 
         public string? DiscountCode { get; set; } = null;
 
-        [Required]
-        public int UsableCount { get; set; }
+        public int? UsableCount { get; set; } = null;
 
         public bool IsActive { get; set; } = true;
 
