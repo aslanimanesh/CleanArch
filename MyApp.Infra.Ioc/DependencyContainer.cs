@@ -19,6 +19,7 @@ namespace MyApp.Infra.Ioc
             services.AddScoped<IDiscountAssignmentToUserService, DiscountAssignmentToUserService>();
             services.AddScoped<IOrderService, OrderService>();
             services.AddScoped<IOrderDetailsService, OrderDetailsService>();
+            services.AddScoped<IPaymentService , PaymentService>();
             #endregion
 
             #region Infra Data Layer
