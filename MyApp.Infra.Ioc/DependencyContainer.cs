@@ -20,6 +20,8 @@ namespace MyApp.Infra.Ioc
             services.AddScoped<IOrderService, OrderService>();
             services.AddScoped<IOrderDetailsService, OrderDetailsService>();
             services.AddScoped<IPaymentService , PaymentService>();
+            services.AddScoped<IUsedUserDiscountService, UsedUserDiscountService>();
+            services.AddScoped<IUsedProductDiscountService , UsedProductDiscountService>();
             #endregion
 
             #region Infra Data Layer
@@ -30,7 +32,10 @@ namespace MyApp.Infra.Ioc
             services.AddScoped<IUserDiscountRepository, UserDiscountRepository>();
             services.AddScoped<IOrderRepository, OrderRepository>();
             services.AddScoped<IOrderDetailsRepository, OrderDetailsRepository>();
-            services.AddScoped<IUsableUserDiscount, UsableUserDiscountRepository>();
+            services.AddScoped<IUsedUserDiscountRepository, UsedUserDiscountRepository>();
+            services.AddScoped<IUsedProductDiscountRepository, UsedProductDiscountRepository>();
+
+            
             #endregion
 
         }

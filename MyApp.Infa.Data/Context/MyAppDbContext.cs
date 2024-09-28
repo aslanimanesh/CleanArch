@@ -20,7 +20,8 @@ namespace MyApp.Infa.Data.Context
         public DbSet<UserDiscount> UserDiscounts { get; set; }
         public DbSet<Order> Orders { get; set; }
         public DbSet<OrderDetail> OrderDetails { get; set; }
-        public DbSet<UsableUserDiscount> UsableUserDiscounts { get; set; }
+        public DbSet<UsedUserDiscount> UsedUserDiscounts { get; set; }
+        public DbSet<UsedProductDiscount> UsedProductDiscounts { get; set; } 
 
         #endregion
 
@@ -35,8 +36,11 @@ namespace MyApp.Infa.Data.Context
                 .HasKey(ud => new { ud.UserId, ud.DiscountId });
 
 
-            modelBuilder.Entity<UsableUserDiscount>()
-                .HasKey(ud => new { ud.UserId, ud.DiscountId });
+            modelBuilder.Entity<UsedProductDiscount>()
+                .HasKey(up => new {up.UserId, up.DiscountId});
+
+            modelBuilder.Entity<UsedUserDiscount>()
+                .HasKey(ud => new { ud.UserId , ud.DiscountId });
 
             base.OnModelCreating(modelBuilder);
         }
