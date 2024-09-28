@@ -31,7 +31,7 @@ namespace MyApp.Mvc.Areas.Admin.Controllers
         }
         #endregion
 
-        #region Actions
+        #region Public Methods
 
         #region List
         // GET: DiscountController
