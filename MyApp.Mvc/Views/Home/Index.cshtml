@@ -345,13 +345,18 @@
                             {
                                 <div class="col-lg-4 col-sm-6 mb-4">
                                     <!-- start of product-card -->
+
+                                  
+
                                     <div class="product-card product-card-horizontal">
                                         <div class="product-thumbnail">
                                             <a href="#">
                                                 <img src="/images/@product.ImageName" alt="@product.Title">
                                             </a>
                                         </div>
+                      
                                         <div class="product-card-body">
+
                                             <h2 class="product-title">
                                                 <a href="#">
                                                     @product.Title
@@ -364,11 +369,18 @@
                                                 <span>+</span>
                                             </div>
                                             <div class="product-price fa-num">
+                                                <div class="d-flex align-items-center">
+                                                    <del class="price-old">@product.Price.ToString("N0", new System.Globalization.CultureInfo("fa-IR")) <span class="currency">تومان</span></del>
+                                                    <span class="discount ms-2">@product.DiscountPercentage</span>
+                                                </div>
                                                 <span class="price-now">
-                                                    @product.Price.ToString("N0", new System.Globalization.CultureInfo("fa-IR")) <span class="currency">تومان</span>
+                                                    @product.Price - @product.DiscountedPrice
+                                                    <span class="currency">تومان</span>
                                                 </span>
                                             </div>
                                         </div>
+
+
                                         <div class="product-card-footer">
                                             <div class="d-flex align-items-center justify-content-between mt-2 py-2">
                                                 <div class="product-actions">

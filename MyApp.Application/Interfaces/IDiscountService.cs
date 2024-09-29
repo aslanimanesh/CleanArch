@@ -10,8 +10,12 @@ namespace MyApp.Application.Interfaces
 
         #region Check DiscountCode duplicate 
         Task<bool> IsExistDiscountCode(string discountCode);
-
         #endregion
+
+        #region GetLatestActiveDiscount
+        Task<Discount> GetLatestActiveDiscountAsync(int? userId);
+        #endregion
+
 
     }
 }

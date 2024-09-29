@@ -14,7 +14,7 @@ namespace MyApp.Infra.Ioc
             #region Application Layer
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IProductService, ProductService>();
-            services.AddScoped<IDiscountService, DiscoutService>();
+            services.AddScoped<IDiscountService, DiscountService>();
             services.AddScoped<IDiscountAssignmentToProductService, DiscountAssignmentToProductService>();
             services.AddScoped<IDiscountAssignmentToUserService, DiscountAssignmentToUserService>();
             services.AddScoped<IOrderService, OrderService>();
@@ -34,8 +34,6 @@ namespace MyApp.Infra.Ioc
             services.AddScoped<IOrderDetailsRepository, OrderDetailsRepository>();
             services.AddScoped<IUsedUserDiscountRepository, UsedUserDiscountRepository>();
             services.AddScoped<IUsedProductDiscountRepository, UsedProductDiscountRepository>();
-
-            
             #endregion
 
         }

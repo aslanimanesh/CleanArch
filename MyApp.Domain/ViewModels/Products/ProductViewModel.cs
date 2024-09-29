@@ -21,6 +21,10 @@ namespace MyApp.Domain.ViewModels.Products
 
         public string? ImageName { get; set; } = null;
 
+        public decimal? OriginalPrice { get; set; }
+        public decimal? DiscountedPrice { get; set; }
+        public int? DiscountPercentage { get; set; }
+
         #endregion
     }
 }

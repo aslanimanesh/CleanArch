@@ -4,7 +4,7 @@ using MyApp.Domain.Models;
 
 namespace MyApp.Application.Services
 {
-    public class DiscoutService : GenericService<Discount>, IDiscountService
+    public class DiscountService : GenericService<Discount>, IDiscountService
     {
         #region Fields
         private readonly IDiscountRepository _discountRepository;
@@ -19,9 +19,9 @@ namespace MyApp.Application.Services
         #endregion
 
         #region Constructor
-        public DiscoutService(IDiscountRepository discountRepository,IOrderDetailsRepository orderDetailsRepository,IOrderRepository orderRepository,
-                IProductRepository productRepository,IUserDiscountRepository userDiscountRepository,IProductDiscountRepository productDiscountRepository,
-                IUsedUserDiscountRepository usedUserDiscountRepository,IUsedProductDiscountRepository usedProductDiscountRepository)
+        public DiscountService(IDiscountRepository discountRepository, IOrderDetailsRepository orderDetailsRepository, IOrderRepository orderRepository,
+                IProductRepository productRepository, IUserDiscountRepository userDiscountRepository, IProductDiscountRepository productDiscountRepository,
+                IUsedUserDiscountRepository usedUserDiscountRepository, IUsedProductDiscountRepository usedProductDiscountRepository)
                 : base(discountRepository)
         {
             _discountRepository = discountRepository;
@@ -40,6 +40,8 @@ namespace MyApp.Application.Services
         #region ApplyDiscountToOrderAsync
         public async Task<string> ApplyDiscountToOrderAsync(string discountCode, int orderId, int userId)
         {
+            #region Before Apply Discount
+
             #region Order Validation
 
             var order = await _orderRepository.GetOrderWithDetailsAsync(orderId);
@@ -85,7 +87,7 @@ namespace MyApp.Application.Services
 
             // چک می‌کنیم که آیا این کاربر قبلاً از این تخفیف استفاده کرده است یا خیر
             var usedUserDiscount = await _usedUserDiscountRepository.FindUsedUserDiscountByCodeAsync(userId, discountCode);
-               
+
 
             if (usedUserDiscount != null)
             {
@@ -94,81 +96,90 @@ namespace MyApp.Application.Services
 
             #endregion
 
-            #region Product Discount Usage Validation
+            #endregion
 
-            // دریافت محصولات سفارش بر اساس orderId
-            var productIds = order.OrderDetails.Select(oi => oi.ProductId).ToList();
-            
-            if (!productIds.Any())
+            #region Calculate Discount
+
+            decimal discountAmount = 0;
+
+            // 1. تخفیف به کل سفارش برای همه کاربران و همه محصولات
+            if (discount.IsGeneralForProducts && discount.IsGeneralForUsers)
             {
-                return "محصولی در این سفارش یافت نشد.";
+                // تخفیف برای کل مبلغ سفارش اعمال می‌شود
+                discountAmount = order.Sum * (discount.DiscountPercentage / 100m);
             }
-
-            // بررسی اینکه آیا محصولاتی که تخفیف برای آنها اعمال می‌شود در سفارش وجود دارند یا خیر
-            if (discount.ProductDiscounts.Any())
+            // 2. تخفیف برای همه محصولات ولی کاربران خاص
+            else if (discount.IsGeneralForProducts && !discount.IsGeneralForUsers)
             {
-                var applicableProductIds = discount.ProductDiscounts.Select(pd => pd.ProductId).ToList();
-                var commonProducts = productIds.Intersect(applicableProductIds).ToList();
-
-                if (commonProducts.Any())
+                // بررسی اینکه کاربر خاص مجاز به استفاده از تخفیف باشد
+                if (discount.UserDiscounts.Any(ud => ud.UserId == userId))
                 {
-                    // بررسی اینکه آیا تخفیف قبلاً برای این محصولات استفاده شده است
-                    foreach (var productId in commonProducts)
-                    {
-                        var usedProductDiscount = await _usedProductDiscountRepository.FindUsedProductDiscountByCodeAsync(productId, discountCode, orderId);
+                    discountAmount = order.Sum * (discount.DiscountPercentage / 100m);
+                }
+                else
+                {
+                    return "شما مجاز به استفاده از این کد تخفیف نمی باشید";
+                }
+            }
+            // 3. تخفیف برای همه کاربران ولی محصولات خاص
+            else if (!discount.IsGeneralForProducts && discount.IsGeneralForUsers)
+            {
+                // بررسی اینکه تخفیف برای محصولات خاصی اعمال شود
+                bool hasValidProducts = false; // برای پیگیری اینکه آیا محصول معتبر وجود دارد یا نه
 
-                        if (usedProductDiscount != null)
+                foreach (var orderItem in order.OrderDetails)
+                {
+                    if (discount.ProductDiscounts.Any(pd => pd.ProductId == orderItem.ProductId))
+                    {
+                        hasValidProducts = true; // اگر محصول معتبر پیدا شد، مقدار true می‌شود
+                        discountAmount += orderItem.Price * orderItem.Count * (discount.DiscountPercentage / 100m);
+                    }
+                }
+
+                // بررسی اینکه آیا هیچ محصول معتبری پیدا نشد
+                if (!hasValidProducts)
+                {
+                    return "محصولات سبد خرید شما شامل این کد تخفیف نمی شوند";
+                }
+            }
+            // 4. تخفیف برای کاربران خاص و محصولات خاص
+            else if (!discount.IsGeneralForProducts && !discount.IsGeneralForUsers)
+            {
+                // بررسی اینکه کاربر و محصول مجاز به استفاده از تخفیف باشند
+                if (discount.UserDiscounts.Any(ud => ud.UserId == userId))
+                {
+                    foreach (var orderItem in order.OrderDetails)
+                    {
+                        if (discount.ProductDiscounts.Any(pd => pd.ProductId == orderItem.ProductId))
                         {
-                            return $"تخفیف قبلاً برای محصول با شناسه {productId} استفاده شده است.";
+                            discountAmount += orderItem.Price * orderItem.Count * (discount.DiscountPercentage / 100m);
                         }
                     }
                 }
                 else
                 {
-                    return "این تخفیف برای محصولات این سفارش معتبر نیست.";
+                    return "این کد تخفیف متعلق به شما نمی باشد";
                 }
             }
+
+            // محاسبه نهایی مبلغ سفارش با تخفیف
+            //var sumWithDiscount = order.Sum - discountAmount;
 
             #endregion
 
-            #region Applying Discount
+            #region Apply Discount
+            order.Sum = order.Sum - discountAmount;
+            await _orderRepository.UpdateAsync(order);
+            #endregion
+                   
+            #region After Apply Discount
 
-            // ذخیره اطلاعات تخفیف استفاده‌شده برای محصولات مشترک
-            if (discount.ProductDiscounts.Any())
+            if (discount.UsableCount.HasValue)
             {
-                var applicableProductIds = discount.ProductDiscounts.Select(pd => pd.ProductId).ToList();
-                var commonProducts = productIds.Intersect(applicableProductIds).ToList();
-
-                foreach (var productId in commonProducts)
-                {
-                    var usedProductDiscount = new UsedProductDiscount
-                    {
-                        ProductId = productId,
-                        DiscountId = discount.Id,
-                        OrderId = orderId,
-                        UsedDate = DateTime.Now
-                    };
-                    await _usedProductDiscountRepository.AddAsync(usedProductDiscount);
-                }
+                discount.UsableCount -= 1;
             }
-            else // در صورتی که تخفیف عمومی باشد یا فقط برای کاربران باشد
-            {
-                foreach (var productId in productIds)
-                {
-                    var usedProductDiscount = new UsedProductDiscount
-                    {
-                        ProductId = productId,
-                        DiscountId = discount.Id,
-                        OrderId = orderId,
-                        UsedDate = DateTime.Now
-                    };
-                    await _usedProductDiscountRepository.AddAsync(usedProductDiscount);
-                }
-            }
-
-            // به‌روزرسانی تعداد دفعات استفاده شده از تخفیف و تعداد قابل استفاده
             discount.UsedCount += 1;
-            discount.UsableCount -= 1;
+
             await _discountRepository.UpdateAsync(discount);
 
             // ذخیره اطلاعات تخفیف استفاده‌شده توسط کاربر
@@ -184,8 +195,8 @@ namespace MyApp.Application.Services
             return "تخفیف با موفقیت اعمال شد.";
 
             #endregion
-        }
 
+        }
         #endregion
 
         #region Check DiscountCode duplicate 
@@ -193,6 +204,14 @@ namespace MyApp.Application.Services
         {
             return await _discountRepository.IsExistDiscountCode(discountCode);
         }
+        #endregion
+
+        #region GetLatestActiveDiscount
+        public async Task<Discount> GetLatestActiveDiscountAsync(int? userId)
+        {
+           return await _discountRepository.GetLatestActiveDiscountAsync(userId);
+        }
+
         #endregion
 
         #endregion

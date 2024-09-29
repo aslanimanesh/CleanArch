@@ -46,6 +46,8 @@ namespace MyApp.Mvc.Areas.Admin.Controllers
                 StartDate = discount.StartDate,
                 EndDate = discount.EndDate,
                 UsableCount = discount.UsableCount,
+                IsGeneralForUsers = discount.IsGeneralForUsers,
+                IsGeneralForProducts = discount.IsGeneralForProducts,
                 IsActive = discount.IsActive,
 
             }).ToList();
@@ -157,9 +159,9 @@ namespace MyApp.Mvc.Areas.Admin.Controllers
                     DiscountCode = viewModel.DiscountCode,
                     StartDate = viewModel.StartDate,
                     EndDate = viewModel.EndDate,
-                    UsableCount= viewModel.UsableCount,
-                    IsGeneralForUsers= viewModel.IsGeneralForUsers,
-                    IsGeneralForProducts= viewModel.IsGeneralForProducts,
+                    UsableCount = viewModel.UsableCount,
+                    IsGeneralForUsers = viewModel.IsGeneralForUsers,
+                    IsGeneralForProducts = viewModel.IsGeneralForProducts,
                     IsActive = viewModel.IsActive,
                 };
 

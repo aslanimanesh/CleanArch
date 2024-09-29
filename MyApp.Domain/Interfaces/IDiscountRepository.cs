@@ -13,5 +13,14 @@ namespace MyApp.Domain.Interfaces
         Task<bool> IsExistDiscountCode(string discountCode);
         #endregion
 
+        #region GetAllActiveDiscounts
+        Task<IEnumerable<Discount>> GetAllActiveDiscountsAsync();
+        #endregion
+
+        #region GetLatestActiveDiscount
+        Task<Discount> GetLatestActiveDiscountAsync(int? userId);
+        #endregion
+
+
     }
 }

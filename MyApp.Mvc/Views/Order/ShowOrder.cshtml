@@ -54,8 +54,9 @@
         <td colspan="1">
             <form asp-controller="Discount" asp-action="UseDiscount" method="post">
                 <input type="hidden" name="orderId" value="@ViewBag.OrderId" />
-                <input type="text" name="discountCode" class="form-control" />
-                <input type="submit" class="btn btn-primary btn-block" style="margin-top: 5px" value="اعمال" />
+                <input type="hidden" name="userId" value="@ViewBag.UserId" />
+                <input type="text" name="discountCode" class="form-control" @(TempData["DiscountResult"] != null ? "disabled" : "") />
+                <input type="submit" class="btn btn-primary btn-block" style="margin-top: 5px" value="اعمال" @(TempData["DiscountResult"] != null ? "disabled" : "") />
             </form>
         </td>
         <td colspan="1">جمع کل : </td>

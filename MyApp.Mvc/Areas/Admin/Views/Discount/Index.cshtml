@@ -20,6 +20,8 @@
             <th>Discount Percentage</th>
             <th>Start Date</th>
             <th>End Date</th>
+            <th>IsGeneralForUsers</th>
+            <th>IsGeneralForProducts</th>
             <th>Is Active</th>
             <th>Actions</th>
         </tr>
@@ -32,13 +34,31 @@
                 <td>@discount.DiscountPercentage %</td>
                 <td>@(discount.StartDate.HasValue ? discount.StartDate.Value.ToString("yyyy-MM-dd") : "تعریف نشده")</td>
                 <td>@(discount.EndDate.HasValue ? discount.EndDate.Value.ToString("yyyy-MM-dd") : "تعریف نشده")</td>
+                <td><input type="checkbox" @(discount.IsGeneralForUsers ? "checked" : "") disabled /> </td>
+                <td><input type="checkbox" @(discount.IsGeneralForProducts ? "checked" : "") disabled /> </td>
+
                 <td>@(discount.IsActive ? "Yes" : "No")</td>
                 <td>
                     <a href="@Url.Action("Details", "Discount", new { id = discount.Id })" class="btn btn-info">Details</a>
                     <a href="@Url.Action("Edit", "Discount", new { id = discount.Id })" class="btn btn-warning">Edit</a>
                     <a href="@Url.Action("Delete", "Discount", new { id = discount.Id })" class="btn btn-danger">Delete</a>
-                    <a href="@Url.Action("AssignToProduct", "Discount", new { id = discount.Id })" class="btn btn-primary">AssignToProduct</a>
+                    @if(discount.IsGeneralForProducts == false)
+                    {
+                        <a href="@Url.Action("AssignToProduct", "Discount", new { id = discount.Id })" class="btn btn-primary">AssignToProduct</a>
+                    }
+                    else
+                    {
+                        <a href="@Url.Action("AssignToProduct", "Discount", new { id = discount.Id })" class="btn btn-dark disabled ">AssignToProduct</a>
+                    }
+                    @if(@discount.IsGeneralForUsers == false)
+                    {
                     <a href="@Url.Action("AssignToUser", "Discount", new { id = discount.Id })" class="btn btn-success">AssignToUser</a>
+                    }
+                    else
+                    {
+                    <a href="@Url.Action("AssignToUser", "Discount", new { id = discount.Id })" class="btn btn-dark disabled">AssignToUser</a>
+                    }
+                    
                 </td>
             </tr>
         }
