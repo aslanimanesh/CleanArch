@@ -5,14 +5,18 @@ namespace MyApp.Infa.Data.Context
 {
     public class MyAppDbContext : DbContext
     {
+
         #region Constructor
+
         public MyAppDbContext(DbContextOptions<MyAppDbContext> options) : base(options)
         {
 
         }
+
         #endregion
 
         #region DbSets
+
         public DbSet<User> Users { get; set; }
         public DbSet<Product> Products { get; set; }
         public DbSet<Discount> Discounts { get; set; }
@@ -26,6 +30,7 @@ namespace MyApp.Infa.Data.Context
         #endregion
 
         #region Model Configuration
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<ProductDiscount>()

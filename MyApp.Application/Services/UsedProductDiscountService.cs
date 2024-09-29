@@ -6,9 +6,11 @@ namespace MyApp.Application.Services
 {
     public class UsedProductDiscountService : GenericService<UsedProductDiscount> , IUsedProductDiscountService
     {
+        private readonly IUsedProductDiscountRepository _usedProductDiscountRepository;
+
         public UsedProductDiscountService(IUsedProductDiscountRepository usedProductDiscountRepository) : base(usedProductDiscountRepository)
         {
-            
+            _usedProductDiscountRepository = usedProductDiscountRepository;
         }
     }
 }

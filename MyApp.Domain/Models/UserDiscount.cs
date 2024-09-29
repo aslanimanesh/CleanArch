@@ -4,6 +4,7 @@ namespace MyApp.Domain.Models
 {
     public class UserDiscount
     {
+
         #region Properties
 
         [ForeignKey("User")]
@@ -15,5 +16,6 @@ namespace MyApp.Domain.Models
         public Discount Discount { get; set; }
 
         #endregion
+
     }
 }

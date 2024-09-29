@@ -4,6 +4,7 @@ namespace MyApp.Domain.ViewModels.Products
 {
     public class EditProductViewModel
     {
+
         #region Properties
 
         public int Id { get; set; }
@@ -22,5 +23,6 @@ namespace MyApp.Domain.ViewModels.Products
         public string? ImageName { get; set; } = null;
 
         #endregion
+
     }
 }

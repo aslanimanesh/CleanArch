@@ -4,6 +4,9 @@ namespace MyApp.Domain.ViewModels.Users
 {
     public class RegisterViewModel
     {
+
+        #region Properties
+
         [Display(Name = "نام ")]
         [Required(ErrorMessage = "لطفا {0} را وارد کنید")]
         [MaxLength(100, ErrorMessage = "{0} نمی تواند بیشتر از {1} کاراکتر باشد .")]
@@ -35,5 +38,8 @@ namespace MyApp.Domain.ViewModels.Users
         [MaxLength(100, ErrorMessage = "{0} نمی تواند بیشتر از {1} کاراکتر باشد .")]
         [Compare("Password", ErrorMessage = "کلمه های عبور مغایرت دارند")]
         public string RePassword { get; set; }
+
+        #endregion
+
     }
 }

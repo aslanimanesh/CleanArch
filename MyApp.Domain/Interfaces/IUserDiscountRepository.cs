@@ -7,11 +7,15 @@ namespace MyApp.Domain.Interfaces
     {
 
         #region GetAsync
+
         Task<UserDiscount> GetAsync(Expression<Func<UserDiscount, bool>> predicate);
+
         #endregion
 
         #region GetUserDiscountAsync
+
         Task<UserDiscount> GetUserDiscountAsync(int userId, int discountId);
+
         #endregion
 
     }

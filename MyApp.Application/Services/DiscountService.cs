@@ -7,6 +7,7 @@ namespace MyApp.Application.Services
     public class DiscountService : GenericService<Discount>, IDiscountService
     {
         #region Fields
+
         private readonly IDiscountRepository _discountRepository;
         private readonly IOrderDetailsRepository _orderDetailsRepository;
         private readonly IOrderRepository _orderRepository;
@@ -19,6 +20,7 @@ namespace MyApp.Application.Services
         #endregion
 
         #region Constructor
+
         public DiscountService(IDiscountRepository discountRepository, IOrderDetailsRepository orderDetailsRepository, IOrderRepository orderRepository,
                 IProductRepository productRepository, IUserDiscountRepository userDiscountRepository, IProductDiscountRepository productDiscountRepository,
                 IUsedUserDiscountRepository usedUserDiscountRepository, IUsedProductDiscountRepository usedProductDiscountRepository)
@@ -33,11 +35,13 @@ namespace MyApp.Application.Services
             _usedUserDiscountRepository = usedUserDiscountRepository;
             _usedProductDiscountRepository = usedProductDiscountRepository;
         }
+
         #endregion
 
         #region Public Methods
 
         #region ApplyDiscountToOrderAsync
+
         public async Task<string> ApplyDiscountToOrderAsync(string discountCode, int orderId, int userId)
         {
             #region Before Apply Discount
@@ -200,13 +204,16 @@ namespace MyApp.Application.Services
         #endregion
 
         #region Check DiscountCode duplicate 
+
         public async Task<bool> IsExistDiscountCode(string discountCode)
         {
             return await _discountRepository.IsExistDiscountCode(discountCode);
         }
+
         #endregion
 
         #region GetLatestActiveDiscount
+
         public async Task<Discount> GetLatestActiveDiscountAsync(int? userId)
         {
            return await _discountRepository.GetLatestActiveDiscountAsync(userId);

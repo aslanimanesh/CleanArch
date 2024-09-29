@@ -5,10 +5,18 @@ namespace MyApp.Domain.Interfaces
 {
     public interface IProductDiscountRepository : IGenericRepository<ProductDiscount>
     {
+
+        #region GetAsync
+
         Task<ProductDiscount> GetAsync(Expression<Func<ProductDiscount, bool>> predicate);
-        //Task<List<ProductDiscount>> GetDiscountsForProductAsync(int productId);
+
+        #endregion
+
+        #region GetDiscountsForProducts
+
         Task<IEnumerable<ProductDiscount>> GetDiscountsForProductsAsync(List<int> productIds, int discountId);
 
+        #endregion
 
     }
 }

@@ -5,7 +5,9 @@ namespace MyApp.Domain.Interfaces
 {
     public interface IUserRepository : IGenericRepository<User>
     {
+
         #region User Management
+
         Task<FilterUserViewModel> FilterAsync(FilterUserViewModel model);
         Task<User> LoginUser(LoginViewModel login);
 
@@ -17,5 +19,6 @@ namespace MyApp.Domain.Interfaces
         Task<bool> IsExistEmail(string email, int? userId);
 
         #endregion
+
     }
 }

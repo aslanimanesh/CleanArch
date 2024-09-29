@@ -4,6 +4,7 @@ namespace MyApp.Domain.ViewModels.Users
 {
     public class CreateUserViewModel
     {
+
         #region Properties
 
         [Required]
@@ -30,5 +31,6 @@ namespace MyApp.Domain.ViewModels.Users
         public bool IsActive { get; set; } = true;
 
         #endregion
+
     }
 }

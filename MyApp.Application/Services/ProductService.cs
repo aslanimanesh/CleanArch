@@ -1,28 +1,40 @@
 ﻿using MyApp.Application.Interfaces;
 using MyApp.Domain.Interfaces;
 using MyApp.Domain.Models;
+using MyApp.Domain.ViewModels.Discounts;
 using MyApp.Domain.ViewModels.Products;
 
 namespace MyApp.Application.Services
 {
     public class ProductService : GenericService<Product>, IProductService
     {
+
         #region Fields
+
         private readonly IProductRepository _productRepository;
         private readonly IDiscountRepository _discountRepository;
+
         #endregion
 
         #region Constructor
+
         public ProductService(IProductRepository productRepository , IDiscountRepository discountRepository) : base(productRepository)
         {
             _productRepository = productRepository;
             _discountRepository = discountRepository;
         }
+
+        #endregion
+
+        #region Public Methods
+
+        #region GetDiscountedProducts
+
         // متدی که تخفیف‌ها را بدون توجه به وضعیت لاگین کاربر برمی‌گرداند
         public async Task<IEnumerable<ProductViewModel>> GetDiscountedProductsAsync()
         {
             var products = await GetAllAsync();
-            var discounts = await _discountRepository.GetAllActiveDiscountsAsync();
+            var discounts = await _discountRepository.GetAllActiveDiscountsWithoutCodeAsync();
 
             var productViewModels = products.Select(product => new ProductViewModel
             {
@@ -37,26 +49,102 @@ namespace MyApp.Application.Services
             return productViewModels;
         }
 
-        // متدی که تخفیف‌ها را با توجه به وضعیت لاگین کاربر برمی‌گرداند
+        #endregion
+
+        #region GetDiscountedProductsByUserStatus
+
         public async Task<IEnumerable<ProductViewModel>> GetDiscountedProductsByUserStatusAsync(int? userId)
         {
-            var products = await GetAllAsync();
-            var discounts = await _discountRepository.GetAllActiveDiscountsAsync(); // دریافت تخفیف‌های فعال
+            var activeDiscounts = await _discountRepository.GetAllActiveDiscountsWithoutCodeAsync();
 
-            var productViewModels = products.Select(product => new ProductViewModel
+            // دسته‌بندی تخفیف‌ها
+            var generalDiscounts = activeDiscounts
+                .Where(d => d.IsGeneralForProducts && d.IsGeneralForUsers)
+                .ToList();
+
+            var specificUserDiscounts = activeDiscounts
+                .Where(d => !d.IsGeneralForUsers && d.IsGeneralForProducts)
+                .ToList();
+
+            var specificProductDiscounts = activeDiscounts
+                .Where(d => !d.IsGeneralForProducts && d.IsGeneralForUsers)
+                .ToList();
+
+            var specificUserProductDiscounts = activeDiscounts
+                .Where(d => !d.IsGeneralForProducts && !d.IsGeneralForUsers)
+                .ToList();
+
+            var products = await GetAllAsync();
+            var productViewModels = new List<ProductViewModel>();
+
+            foreach (var product in products)
             {
-                Id = product.Id,
-                Title = product.Title,
-                ImageName = product.ImageName,
-                OriginalPrice = product.Price,
-                // استفاده از لیست تخفیف‌ها برای محاسبه قیمت تخفیف‌دار
-                DiscountedPrice = CalculateDiscountedPrice(product.Price, discounts),
-                DiscountPercentage = GetDiscountPercentage(discounts)
-            });
+                var productViewModel = new ProductViewModel
+                {
+                    Id = product.Id,
+                    Title = product.Title,
+                    Description = product.Description,
+                    Price = product.Price,
+                    ImageName = product.ImageName,
+                    OriginalPrice = product.Price,
+                    DiscountedPrice = product.Price, // ابتدا قیمت جدید را برابر با قیمت قبلی قرار می‌دهیم
+                    DiscountPercentage = 0 // درصد تخفیف را ابتدا صفر قرار می‌دهیم
+                };
+
+                // اعمال تخفیف‌های عمومی
+                foreach (var discount in generalDiscounts)
+                {
+                    var discountAmount = product.Price * (discount.DiscountPercentage / 100m);
+                    productViewModel.DiscountedPrice -= discountAmount;
+                    productViewModel.DiscountPercentage = discount.DiscountPercentage;
+                }
+
+                // اعمال تخفیف‌های مخصوص کاربران
+                if (userId.HasValue)
+                {
+                    foreach (var discount in specificUserDiscounts)
+                    {
+                        if (discount.UserDiscounts.Any(ud => ud.UserId == userId.Value))
+                        {
+                            var discountAmount = product.Price * (discount.DiscountPercentage / 100m);
+                            productViewModel.DiscountedPrice -= discountAmount;
+                            productViewModel.DiscountPercentage = Math.Max(productViewModel.DiscountPercentage ?? 0, discount.DiscountPercentage);
+                        }
+                    }
+
+                    // اعمال تخفیف‌های مخصوص محصولات
+                    foreach (var discount in specificProductDiscounts)
+                    {
+                        if (discount.ProductDiscounts.Any(pd => pd.ProductId == product.Id))
+                        {
+                            var discountAmount = product.Price * (discount.DiscountPercentage / 100m);
+                            productViewModel.DiscountedPrice -= discountAmount;
+                            productViewModel.DiscountPercentage = Math.Max(productViewModel.DiscountPercentage ?? 0, discount.DiscountPercentage);
+                        }
+                    }
+
+                    // اعمال تخفیف‌های مخصوص کاربران خاص و محصولات خاص
+                    foreach (var discount in specificUserProductDiscounts)
+                    {
+                        if (discount.UserDiscounts.Any(ud => ud.UserId == userId.Value) &&
+                            discount.ProductDiscounts.Any(pd => pd.ProductId == product.Id))
+                        {
+                            var discountAmount = product.Price * (discount.DiscountPercentage / 100m);
+                            productViewModel.DiscountedPrice -= discountAmount;
+                            productViewModel.DiscountPercentage = Math.Max(productViewModel.DiscountPercentage ?? 0, discount.DiscountPercentage);
+                        }
+                    }
+                }
+
+                productViewModels.Add(productViewModel);
+            }
 
             return productViewModels;
         }
 
+        #endregion
+
+        #region CalculateDiscountedPrice
 
         private decimal CalculateDiscountedPrice(decimal originalPrice, IEnumerable<Discount> discounts)
         {
@@ -72,6 +160,9 @@ namespace MyApp.Application.Services
             return originalPrice; // اگر تخفیفی نباشد، قیمت اصلی برمی‌گردد
         }
 
+        #endregion
+
+        #region GetDiscountPercentage
 
         private int GetDiscountPercentage(IEnumerable<Discount> discounts)
         {
@@ -82,6 +173,9 @@ namespace MyApp.Application.Services
         }
 
         #endregion
+
+        #endregion
+
     }
 
 }

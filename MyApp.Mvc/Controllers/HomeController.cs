@@ -42,6 +42,7 @@ namespace MyApp.Mvc.Controllers
                 ImageName = p.ImageName,
                 DiscountPercentage = p.DiscountPercentage,
                 DiscountedPrice = p.DiscountedPrice,
+                OriginalPrice = p.OriginalPrice,
             }).ToList();
 
             return View(productViewModels);

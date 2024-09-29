@@ -5,6 +5,7 @@ namespace MyApp.Domain.ViewModels.Users
 {
     public class FilterUserViewModel : BasePaging<UserDetailViewModel>
     {
+
         #region Properties
 
         [Display(Name = "نام")]
@@ -14,5 +15,6 @@ namespace MyApp.Domain.ViewModels.Users
         public string? LastName { get; set; }
 
         #endregion
+
     }
 }

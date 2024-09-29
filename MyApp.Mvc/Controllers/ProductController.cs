@@ -27,5 +27,8 @@ namespace MyApp.Mvc.Controllers
             // ارسال لیست محصولات به ویو
             return View(products);
         }
+
+          
+
     }
 }

@@ -6,11 +6,15 @@ namespace MyApp.Domain.Interfaces
     {
 
         #region ExistProductInOrderDetail
+
         Task<OrderDetail> ExistProductInOrderDetail(int orderId, int productId);
+
         #endregion
 
         #region GetAllOrderDetailByOrderId
+
         Task<List<OrderDetail>> GetAllOrderDetailByOrderId(int orderId);
+
         #endregion
 
     }

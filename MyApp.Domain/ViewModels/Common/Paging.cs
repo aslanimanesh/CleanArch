@@ -4,6 +4,7 @@ namespace MyApp.Domain.ViewModels.Common
 {
     public class BasePaging<T>
     {
+
         #region Properties
 
         public int Page { get; set; }
@@ -105,9 +106,11 @@ namespace MyApp.Domain.ViewModels.Common
         }
 
         #endregion
+
     }
 
     #region PagingViewModel
+
     public class PagingViewModel
     {
         public int Page { get; set; }
@@ -115,6 +118,7 @@ namespace MyApp.Domain.ViewModels.Common
         public int EndPage { get; set; }
         public int PageCount { get; set; }
     }
+
     #endregion
 
 }

@@ -5,6 +5,7 @@ namespace MyApp.Domain.Models
 {
     public class Order : BaseEntity
     {
+
         #region Properties
 
         [Required]
@@ -25,5 +26,6 @@ namespace MyApp.Domain.Models
         public List<OrderDetail> OrderDetails { get; set; }
 
         #endregion
+
     }
 }

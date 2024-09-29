@@ -4,6 +4,7 @@ namespace MyApp.Domain.ViewModels.AssignDiscount
 {
     public class AssignDiscountToUserViewModel
     {
+
         #region Properties
 
         public int DiscountId { get; set; }
@@ -11,5 +12,6 @@ namespace MyApp.Domain.ViewModels.AssignDiscount
         public List<UserViewModel> Users { get; set; } = new List<UserViewModel>();
 
         #endregion
+
     }
 }

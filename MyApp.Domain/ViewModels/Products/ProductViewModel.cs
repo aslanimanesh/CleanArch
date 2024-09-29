@@ -4,6 +4,7 @@ namespace MyApp.Domain.ViewModels.Products
 {
     public class ProductViewModel
     {
+
         #region Properties
 
         public int Id { get; set; }
@@ -26,5 +27,6 @@ namespace MyApp.Domain.ViewModels.Products
         public int? DiscountPercentage { get; set; }
 
         #endregion
+
     }
 }

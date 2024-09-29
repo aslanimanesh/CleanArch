@@ -8,10 +8,13 @@ namespace MyApp.Infa.Data.Repositories
     public class DiscountRepository : GenericRepository<Discount>, IDiscountRepository
     {
         #region Fields
+
         private readonly MyAppDbContext _dbContext;
+
         #endregion
 
         #region Constructor
+
         public DiscountRepository(MyAppDbContext dbContext) : base(dbContext)
         {
             _dbContext = dbContext;
@@ -39,10 +42,11 @@ namespace MyApp.Infa.Data.Repositories
         #endregion
 
         #region GetAllActiveDiscounts
-        public async Task<IEnumerable<Discount>> GetAllActiveDiscountsAsync()
+        public async Task<IEnumerable<Discount>> GetAllActiveDiscountsWithoutCodeAsync()
         {
             return await _dbContext.Discounts
                 .Where(d => d.IsActive &&
+                             d.DiscountCode == null &&
                             (d.StartDate == null || d.StartDate <= DateTime.UtcNow) &&
                             (d.EndDate == null || d.EndDate >= DateTime.UtcNow) &&
                             (d.UsableCount == null || d.UsableCount > 0))
@@ -56,7 +60,7 @@ namespace MyApp.Infa.Data.Repositories
         public async Task<Discount> GetLatestActiveDiscountAsync(int? userId)
         {
             // ابتدا تمام تخفیف‌های فعال را دریافت می‌کنیم
-            var discounts = await GetAllActiveDiscountsAsync();
+            var discounts = await GetAllActiveDiscountsWithoutCodeAsync();
 
             // تخفیف‌های عمومی که برای همه کاربران هستند
             var generalDiscounts = discounts

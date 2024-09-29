@@ -6,21 +6,28 @@ namespace MyApp.Domain.Interfaces
     {
 
         #region GetByDiscountCodeAsync
+
         Task<Discount> GetDiscountByDiscountCodeAsync(string discountCode);
+
         #endregion
 
         #region Check DiscountCode duplicate 
+
         Task<bool> IsExistDiscountCode(string discountCode);
+
         #endregion
 
         #region GetAllActiveDiscounts
-        Task<IEnumerable<Discount>> GetAllActiveDiscountsAsync();
+
+        Task<IEnumerable<Discount>> GetAllActiveDiscountsWithoutCodeAsync();
+
         #endregion
 
         #region GetLatestActiveDiscount
-        Task<Discount> GetLatestActiveDiscountAsync(int? userId);
-        #endregion
 
+        Task<Discount> GetLatestActiveDiscountAsync(int? userId);
+
+        #endregion
 
     }
 }

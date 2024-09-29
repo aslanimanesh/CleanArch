@@ -4,6 +4,7 @@ namespace MyApp.Domain.ViewModels.Users
 {
     public class LoginViewModel
     {
+
         #region Properties
 
         [Display(Name = "ایمیل")]
@@ -18,5 +19,6 @@ namespace MyApp.Domain.ViewModels.Users
         public string Password { get; set; }
 
         #endregion
+
     }
 }

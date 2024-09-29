@@ -8,12 +8,15 @@ namespace MyApp.Application.Services
     public class PaymentService : IPaymentService
     {
         #region Fields
+
         private const string MerchantId = "cdb9caf7-008b-439c-b6e0-3f4bd44b2476";
         private const string PaymentUrl = "https://payment.zarinpal.com/pg/v4/payment/request.json";
         private const string VerifyUrl = "https://api.zarinpal.com/pg/v4/payment/verify.json";
+
         #endregion
 
         #region Public CreatePaymentAsync
+
         public async Task<(bool success, string redirectUrl, string errorMessage)> CreatePaymentAsync(int orderId, decimal amount, string callbackUrl)
         {
             int amountToRial = (int)(amount * 10);
@@ -108,5 +111,6 @@ namespace MyApp.Application.Services
         }
 
         #endregion
+
     }
 }

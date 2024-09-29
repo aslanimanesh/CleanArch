@@ -24,17 +24,21 @@ namespace MyApp.Application.Services
         #region Public Methods
 
         #region ExistProductInOrderDetail
+
         public async Task<OrderDetail> ExistProductInOrderDetail(int orderId, int productId)
         {
             return await _orderDetailsRepository.ExistProductInOrderDetail(orderId, productId);
         }
+
         #endregion
 
         #region GetAllOrderDetailByOrderId
+
         public async Task<List<OrderDetail>> GetAllOrderDetailByOrderId(int orderId)
         {
             return await _orderDetailsRepository.GetAllOrderDetailByOrderId(orderId);
         }
+
         #endregion
 
         #endregion

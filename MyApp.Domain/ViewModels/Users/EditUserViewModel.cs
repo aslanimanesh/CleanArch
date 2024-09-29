@@ -5,6 +5,7 @@ namespace MyApp.Domain.ViewModels.Users
 {
     public class EditUserViewModel : BaseEntity
     {
+
         #region Properties
 
         public int Id { get; set; }
@@ -32,5 +33,6 @@ namespace MyApp.Domain.ViewModels.Users
         public bool IsActive { get; set; } = true;
 
         #endregion
+
     }
 }

@@ -343,11 +343,9 @@
 
                             @foreach (var product in Model)
                             {
+
                                 <div class="col-lg-4 col-sm-6 mb-4">
                                     <!-- start of product-card -->
-
-                                  
-
                                     <div class="product-card product-card-horizontal">
                                         <div class="product-thumbnail">
                                             <a href="#">
@@ -370,11 +368,13 @@
                                             </div>
                                             <div class="product-price fa-num">
                                                 <div class="d-flex align-items-center">
-                                                    <del class="price-old">@product.Price.ToString("N0", new System.Globalization.CultureInfo("fa-IR")) <span class="currency">تومان</span></del>
-                                                    <span class="discount ms-2">@product.DiscountPercentage</span>
+                                                    <del class="price-old">
+                                                        @(((int)product.OriginalPrice).ToString(new System.Globalization.CultureInfo("fa-IR")))
+                                                    <span class="currency">تومان</span></del>
+                                                    <span class="discount ms-2">%@product.DiscountPercentage</span>
                                                 </div>
                                                 <span class="price-now">
-                                                    @product.Price - @product.DiscountedPrice
+                                                       @(((int)product.DiscountedPrice).ToString(new System.Globalization.CultureInfo("fa-IR")))
                                                     <span class="currency">تومان</span>
                                                 </span>
                                             </div>

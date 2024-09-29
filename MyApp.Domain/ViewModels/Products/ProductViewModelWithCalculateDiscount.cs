@@ -4,6 +4,7 @@ namespace MyApp.Domain.ViewModels.Products
 {
     public class ProductViewModelWithCalculateDiscount
     {
+
         #region Properties
 
         public Product Product { get; set; }
@@ -11,5 +12,6 @@ namespace MyApp.Domain.ViewModels.Products
         public decimal FinalPrice { get; set; }
 
         #endregion
+
     }
 }

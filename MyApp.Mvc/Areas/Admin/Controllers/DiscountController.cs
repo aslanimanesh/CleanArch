@@ -96,7 +96,7 @@ namespace MyApp.Mvc.Areas.Admin.Controllers
                 return View(viewModel);
             }
 
-            if (await _discountService.IsExistDiscountCode(viewModel.DiscountCode))
+            if (!string.IsNullOrEmpty(viewModel.DiscountCode) && await _discountService.IsExistDiscountCode(viewModel.DiscountCode))
             {
                 ModelState.AddModelError("DiscountCode", "این کد تخفیف قبلا ثبت شده است");
                 return View(viewModel);

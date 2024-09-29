@@ -4,6 +4,7 @@ namespace MyApp.Domain.ViewModels.Discounts
 {
     public class CreateDiscountViewModel
     {
+
         #region Properties
 
         [Required]
@@ -25,5 +26,6 @@ namespace MyApp.Domain.ViewModels.Discounts
         public bool IsActive { get; set; } = true;
 
         #endregion
+
     }
 }

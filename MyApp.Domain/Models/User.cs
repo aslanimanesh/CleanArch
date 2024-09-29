@@ -5,6 +5,7 @@ namespace MyApp.Domain.Models
 {
     public class User : BaseEntity
     {
+
         #region Properties
 
         [Required]
@@ -37,5 +38,6 @@ namespace MyApp.Domain.Models
         public ICollection<UserDiscount> UserDiscounts { get; set; }
 
         #endregion
+
     }
 }
