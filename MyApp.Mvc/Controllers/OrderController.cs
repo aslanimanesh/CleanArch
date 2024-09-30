@@ -9,6 +9,7 @@ namespace MyApp.Mvc.Controllers
 {
     public class OrderController : Controller
     {
+
         #region Fields
         private readonly IOrderService _orderService;
         private readonly IOrderDetailsService _orderDetailsService;
@@ -29,17 +30,27 @@ namespace MyApp.Mvc.Controllers
         #region Public Methods
 
         #region AddToCart
-        [Authorize] 
+
+        [Authorize]
         public async Task<IActionResult> AddToCart(int id)
         {
             // Get User Id From Current User
             int CurrentUserID = Convert.ToInt32(User.FindFirstValue(ClaimTypes.NameIdentifier));
 
+            // Check for product discount
+            var productViewModel = await _productService.GetProductForShowInBasket(CurrentUserID, id);
+
+            // If the product is not found, return NotFound
+            if (productViewModel == null)
+            {
+                return NotFound();
+            }
+
             // Check if the user already has a pending order
             Order order = await _orderService.HasPendingOrder(CurrentUserID);
             if (order == null)
             {
-                // If no pending order, create a new order
+                // If no pending order exists, create a new order
                 order = new Order()
                 {
                     UserId = CurrentUserID,
@@ -48,64 +59,43 @@ namespace MyApp.Mvc.Controllers
                     Sum = 0,
                 };
 
-                // Retrieve the product to be added to the order
-                var product = await _productService.GetByIdAsync(id);
-                if (product == null)
-                {
-                    return NotFound();
-                }
-
                 // Add the new order to the database
                 await _orderService.AddAsync(order);
-                // Add the product as an order detail
+            }
+
+            // Check if the product already exists in the order details
+            var details = await _orderDetailsService.ExistProductInOrderDetail(order.Id, id);
+            if (details == null)
+            {
+                // If the product does not exist, add it to the order details
                 await _orderDetailsService.AddAsync(new OrderDetail()
                 {
                     OrderId = order.Id,
                     Quantity = 1,
-                    OriginalPrice = product.Price,
-                    ProductId = id
+                    OriginalPrice = productViewModel.Price,
+                    ProductId = productViewModel.Id,
+                    FinalPrice = productViewModel.DiscountedPrice, // Adding the discounted price
+                    DiscountPercentage = productViewModel.DiscountPercentage // Adding the discount percentage
                 });
-
-                // Update the total sum of the order
-                await UpdateSumOrder(order.Id);
             }
             else
             {
-                // If there is a pending order, check if the product already exists in the order
-                var details = await _orderDetailsService.ExistProductInOrderDetail(order.Id, id);
-                if (details == null)
-                {
-                    // If product doesn't exist, add it to the order details
-                    var product = await _productService.GetByIdAsync(id);
-                    if (product == null)
-                    {
-                        return NotFound();
-                    }
-
-                    await _orderDetailsService.AddAsync(new OrderDetail()
-                    {
-                        OrderId = order.Id,
-                        Quantity = 1,
-                        OriginalPrice = product.Price,
-                        ProductId = id
-                    });
-                }
-                else
-                {
-                    // If product exists, increment the count
-                    details.Quantity += 1;
-                    await _orderDetailsService.UpdateAsync(details);
-                }
+                // If the product exists, increment the quantity
+                details.Quantity += 1;
+                await _orderDetailsService.UpdateAsync(details);
             }
 
             // Update the total sum of the order
             await UpdateSumOrder(order.Id);
 
-            return RedirectToAction("ShowOrder", "Order"); // Redirect to the order display
+            return RedirectToAction("ShowOrder", "Order"); // Redirect to show the order
         }
+
+
         #endregion
 
-        #region ShowOrder
+        #region Show Basket Buy
+
         [Authorize] 
         public async Task<IActionResult> ShowOrder()
         {
@@ -132,9 +122,12 @@ namespace MyApp.Mvc.Controllers
                         Count = item.Quantity,
                         ImageName = product.ImageName,
                         OrderDetailId = item.Id,
+                        Title = product.Title,
+                        OriginalPrice = item.OriginalPrice,
                         Price = item.OriginalPrice,
-                        Sum = item.Quantity * item.OriginalPrice, // Calculate total for this item
-                        Title = product.Title
+                        DiscountPercentage = Convert.ToInt32(item.DiscountPercentage),
+                        DiscountedPrice = item.FinalPrice,
+
                     });
                 }
                 // Pass additional order information to the view
@@ -145,9 +138,11 @@ namespace MyApp.Mvc.Controllers
 
             return View(_list); // Return the view with order details
         }
+
         #endregion
 
-        #region Delete
+        #region DeleteProductFromBasket
+
         public async Task<IActionResult> Delete(int id)
         {
             // Retrieve the order detail to be deleted
@@ -157,9 +152,11 @@ namespace MyApp.Mvc.Controllers
 
             return RedirectToAction("ShowOrder", "Order"); // Redirect to show the order
         }
+
         #endregion
 
-        #region Command
+        #region Command Increase And Decrease Quantity 
+
         public async Task<IActionResult> Command(int id, string command)
         {
             // Retrieve the order detail
@@ -198,6 +195,7 @@ namespace MyApp.Mvc.Controllers
         #endregion
 
         #region UpdateSumOrder
+
         public async Task UpdateSumOrder(int orderId)
         {
             // Retrieve the order
@@ -206,10 +204,10 @@ namespace MyApp.Mvc.Controllers
             order.Sum = await _orderService.GetOrderTotalAsync(orderId);
             await _orderService.UpdateAsync(order); // Save changes to the order
         }
-        #endregion
-
-    
 
         #endregion
+
+        #endregion
+
     }
 }

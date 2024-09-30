@@ -16,6 +16,7 @@ namespace MyApp.Application.Services
         private readonly IProductDiscountRepository _productDiscountRepository;
         private readonly IUsedUserDiscountRepository _usedUserDiscountRepository;
         private readonly IUsedProductDiscountRepository _usedProductDiscountRepository;
+        private readonly IOrderDetailsService _orderDetailsService;
 
         #endregion
 
@@ -23,7 +24,8 @@ namespace MyApp.Application.Services
 
         public DiscountService(IDiscountRepository discountRepository, IOrderDetailsRepository orderDetailsRepository, IOrderRepository orderRepository,
                 IProductRepository productRepository, IUserDiscountRepository userDiscountRepository, IProductDiscountRepository productDiscountRepository,
-                IUsedUserDiscountRepository usedUserDiscountRepository, IUsedProductDiscountRepository usedProductDiscountRepository)
+                IUsedUserDiscountRepository usedUserDiscountRepository, IUsedProductDiscountRepository usedProductDiscountRepository,
+                IOrderDetailsService orderDetailsService)
                 : base(discountRepository)
         {
             _discountRepository = discountRepository;
@@ -34,6 +36,7 @@ namespace MyApp.Application.Services
             _productDiscountRepository = productDiscountRepository;
             _usedUserDiscountRepository = usedUserDiscountRepository;
             _usedProductDiscountRepository = usedProductDiscountRepository;
+            _orderDetailsService = orderDetailsService;
         }
 
         #endregion
@@ -101,6 +104,9 @@ namespace MyApp.Application.Services
             #endregion
 
             #endregion
+
+            await ResetDiscountedPricesInOrderAsync(orderId);
+
 
             #region Calculate Discount
 
@@ -215,5 +221,37 @@ namespace MyApp.Application.Services
 
 
         #endregion
+
+
+        private async Task ResetDiscountedPricesInOrderAsync(int orderId)
+        {
+            var order = await _orderRepository.GetOrderWithDetailsAsync(orderId);
+            if (order == null) return; // اگر سفارش یافت نشد، متد را ترک کن
+
+            decimal newTotalSum = 0; // متغیر برای نگهداری مجموع جدید سفارش
+
+            // بررسی و به‌روزرسانی قیمت نهایی محصولات
+            foreach (var orderDetail in order.OrderDetails)
+            {
+                if (orderDetail.DiscountPercentage > 0)
+                {
+                    // اگر درصد تخفیف بزرگتر از 0 باشد، قیمت نهایی را به قیمت اصلی برگردان
+                    orderDetail.FinalPrice = orderDetail.OriginalPrice;
+                    await _orderDetailsService.UpdateAsync(orderDetail); // به‌روزرسانی جزئیات سفارش در پایگاه داده
+                }
+
+                // محاسبه مجموع جدید با استفاده از قیمت نهایی به‌روز شده
+                newTotalSum += Convert.ToDecimal(orderDetail.FinalPrice) * Convert.ToDecimal(orderDetail.Quantity);
+            }
+
+            // به‌روزرسانی مجموع سفارش
+            order.Sum = newTotalSum;
+            await _orderRepository.UpdateAsync(order); // به‌روزرسانی سفارش در پایگاه داده
+        }
+
+
+
+
+
     }
 }

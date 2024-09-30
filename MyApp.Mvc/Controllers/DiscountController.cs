@@ -6,6 +6,7 @@ namespace MyApp.Mvc.Controllers
 {
     public class DiscountController : Controller
     {
+
         #region Fields
         private readonly IDiscountService _discountService;
         #endregion
@@ -34,5 +35,6 @@ namespace MyApp.Mvc.Controllers
         }
 
         #endregion
+
     }
 }

@@ -6,6 +6,7 @@ namespace MyApp.Mvc.Controllers
 {
     public class HomeController : Controller
     {
+
         #region Fields
 
         private readonly IProductService _productService;
@@ -42,5 +43,6 @@ namespace MyApp.Mvc.Controllers
         #endregion
 
         #endregion
+
     }
 }

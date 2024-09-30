@@ -16,7 +16,7 @@ namespace MyApp.Domain.ViewModels.Orders
 
         public decimal? OriginalPrice { get; set; }
         public decimal? DiscountedPrice { get; set; }
-        public int DiscountPercentage { get; set; }
+        public int? DiscountPercentage { get; set; }
 
 
         #endregion
