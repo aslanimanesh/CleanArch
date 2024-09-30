@@ -136,7 +136,7 @@ namespace MyApp.Application.Services
                     if (discount.ProductDiscounts.Any(pd => pd.ProductId == orderItem.ProductId))
                     {
                         hasValidProducts = true; // اگر محصول معتبر پیدا شد، مقدار true می‌شود
-                        discountAmount += orderItem.Price * orderItem.Count * (discount.DiscountPercentage / 100m);
+                        discountAmount += orderItem.OriginalPrice * orderItem.Quantity * (discount.DiscountPercentage / 100m);
                     }
                 }
 
@@ -156,7 +156,7 @@ namespace MyApp.Application.Services
                     {
                         if (discount.ProductDiscounts.Any(pd => pd.ProductId == orderItem.ProductId))
                         {
-                            discountAmount += orderItem.Price * orderItem.Count * (discount.DiscountPercentage / 100m);
+                            discountAmount += orderItem.Quantity * orderItem.OriginalPrice * (discount.DiscountPercentage / 100m);
                         }
                     }
                 }
@@ -213,14 +213,6 @@ namespace MyApp.Application.Services
 
         #endregion
 
-        #region GetLatestActiveDiscount
-
-        //public async Task<Discount> GetLatestActiveDiscountAsync(int? userId)
-        //{
-        //   return await _discountRepository.GetLatestActiveDiscountAsync(userId);
-        //}
-
-        #endregion
 
         #endregion
     }

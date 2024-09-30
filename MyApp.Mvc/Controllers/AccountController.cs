@@ -10,15 +10,20 @@ namespace MyApp.Mvc.Controllers
 {
     public class AccountController : Controller
     {
+
         #region Fields
+
         private readonly IUserService _userService;
+
         #endregion
 
         #region Constructor
+
         public AccountController(IUserService userService)
         {
             _userService = userService;
         }
+
         #endregion
 
         #region Actions
@@ -73,6 +78,7 @@ namespace MyApp.Mvc.Controllers
         #endregion
 
         #region Login
+
         [Route("Login")]
         public async Task<IActionResult> Login()
         {
@@ -126,6 +132,7 @@ namespace MyApp.Mvc.Controllers
         #endregion
 
         #region Logout
+
         [Route("Logout")]
         public IActionResult Logout()
         {
@@ -136,5 +143,6 @@ namespace MyApp.Mvc.Controllers
         #endregion
 
         #endregion
+
     }
 }

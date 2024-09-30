@@ -61,8 +61,8 @@ namespace MyApp.Mvc.Controllers
                 await _orderDetailsService.AddAsync(new OrderDetail()
                 {
                     OrderId = order.Id,
-                    Count = 1,
-                    Price = product.Price,
+                    Quantity = 1,
+                    OriginalPrice = product.Price,
                     ProductId = id
                 });
 
@@ -85,15 +85,15 @@ namespace MyApp.Mvc.Controllers
                     await _orderDetailsService.AddAsync(new OrderDetail()
                     {
                         OrderId = order.Id,
-                        Count = 1,
-                        Price = product.Price,
+                        Quantity = 1,
+                        OriginalPrice = product.Price,
                         ProductId = id
                     });
                 }
                 else
                 {
                     // If product exists, increment the count
-                    details.Count += 1;
+                    details.Quantity += 1;
                     await _orderDetailsService.UpdateAsync(details);
                 }
             }
@@ -129,11 +129,11 @@ namespace MyApp.Mvc.Controllers
                     // Add the order detail information to the view model list
                     _list.Add(new ShowOrderViewModel()
                     {
-                        Count = item.Count,
+                        Count = item.Quantity,
                         ImageName = product.ImageName,
                         OrderDetailId = item.Id,
-                        Price = item.Price,
-                        Sum = item.Count * item.Price, // Calculate total for this item
+                        Price = item.OriginalPrice,
+                        Sum = item.Quantity * item.OriginalPrice, // Calculate total for this item
                         Title = product.Title
                     });
                 }
@@ -170,14 +170,14 @@ namespace MyApp.Mvc.Controllers
             {
                 case "up": // Increment the count
                     {
-                        orderDetail.Count += 1;
+                        orderDetail.Quantity += 1;
                         await _orderDetailsService.UpdateAsync(orderDetail);
                         break;
                     }
                 case "down": // Decrement the count
                     {
-                        orderDetail.Count -= 1;
-                        if (orderDetail.Count == 0)
+                        orderDetail.Quantity -= 1;
+                        if (orderDetail.Quantity == 0)
                         {
                             // If count reaches zero, delete the order detail
                             await _orderDetailsService.DeleteAsync(orderDetail.Id);

@@ -48,7 +48,7 @@ namespace MyApp.Infa.Data.Repositories
         {
             return await _dbContext.OrderDetails
                 .Where(o => o.OrderId == orderId)
-                .Select(d => d.Count * d.Price)
+                .Select(d => d.Quantity * d.OriginalPrice)
                 .SumAsync();
         }
 

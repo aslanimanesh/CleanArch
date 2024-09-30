@@ -7,19 +7,23 @@ namespace MyApp.Mvc.Controllers
     public class HomeController : Controller
     {
         #region Fields
+
         private readonly IProductService _productService;
+
         #endregion
 
         #region Constructor
+
         public HomeController(IProductService productService)
         {
             _productService = productService;
         }
         #endregion
 
-        #region Actions
+        #region Public Methods
 
         #region List
+
         public async Task<IActionResult> Index()
         {
             int? userId = null;
@@ -34,6 +38,7 @@ namespace MyApp.Mvc.Controllers
 
             return View(products);
         }
+
         #endregion
 
         #endregion

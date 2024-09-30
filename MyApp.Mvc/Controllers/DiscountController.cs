@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MyApp.Application.Interfaces;
-using System.Security.Claims;
 
 namespace MyApp.Mvc.Controllers
 {
@@ -18,7 +17,8 @@ namespace MyApp.Mvc.Controllers
         }
         #endregion
 
-        #region UseDiscount
+        #region Use Discount By Code
+
         [Authorize] // Requires user to be authenticated
         [HttpPost]
         public async Task<IActionResult> UseDiscount(string discountCode, int orderId , int userId)
@@ -32,8 +32,6 @@ namespace MyApp.Mvc.Controllers
 
             return RedirectToAction("ShowOrder", "Order"); // Redirect to show the order
         }
-
-        
 
         #endregion
     }

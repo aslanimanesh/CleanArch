@@ -368,10 +368,13 @@
                                             </div>
                                             <div class="product-price fa-num">
                                                 <div class="d-flex align-items-center">
+                                                    @if(product.DiscountPercentage>0)
+                                                    {
                                                     <del class="price-old">
                                                         @(((int)product.OriginalPrice).ToString(new System.Globalization.CultureInfo("fa-IR")))
                                                     <span class="currency">تومان</span></del>
                                                     <span class="discount ms-2">%@product.DiscountPercentage</span>
+                                                    }
                                                 </div>
                                                 <span class="price-now">
                                                        @(((int)product.DiscountedPrice).ToString(new System.Globalization.CultureInfo("fa-IR")))
