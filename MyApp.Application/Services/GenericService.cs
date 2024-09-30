@@ -22,7 +22,7 @@ namespace MyApp.Application.Services
 
         #region CRUD Methods
 
-        public async Task<IReadOnlyList<T>> GetAllAsync()
+        public async Task<IEnumerable<T>> GetAllAsync()
         {
             return await _repository.GetAllAsync();
         }

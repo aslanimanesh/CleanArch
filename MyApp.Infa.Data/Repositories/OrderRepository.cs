@@ -38,7 +38,7 @@ namespace MyApp.Infa.Data.Repositories
         public async Task<Order> HasPendingOrder(int userId)
         {
             return await _dbContext.Orders
-                .SingleOrDefaultAsync(o => o.UserId == userId && !o.IsFinaly);
+                .FirstOrDefaultAsync(o => o.UserId == userId && !o.IsFinaly);
         }
         #endregion
 

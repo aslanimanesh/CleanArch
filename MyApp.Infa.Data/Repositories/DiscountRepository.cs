@@ -41,56 +41,52 @@ namespace MyApp.Infa.Data.Repositories
         }
         #endregion
 
-        #region GetAllActiveDiscounts
-        public async Task<IEnumerable<Discount>> GetAllActiveDiscountsWithoutCodeAsync()
+
+        public async Task<IEnumerable<Discount>> GetAllActiveDiscountsWithoutCodeForUserAsync(int? userId)
         {
-            return await _dbContext.Discounts
+            // ابتدا تمام تخفیف‌های فعال و بدون کد را فیلتر می‌کنیم
+            var activeDiscounts = await _dbContext.Discounts
                 .Where(d => d.IsActive &&
                              d.DiscountCode == null &&
-                            (d.StartDate == null || d.StartDate <= DateTime.UtcNow) &&
-                            (d.EndDate == null || d.EndDate >= DateTime.UtcNow) &&
-                            (d.UsableCount == null || d.UsableCount > 0))
+                             (d.StartDate == null || d.StartDate <= DateTime.UtcNow) &&
+                             (d.EndDate == null || d.EndDate >= DateTime.UtcNow) &&
+                             (d.UsableCount == null || d.UsableCount > 0))
+                .Include(d=>d.UserDiscounts)
+                .Include(d => d.ProductDiscounts) // بارگذاری ProductDiscounts
                 .ToListAsync();
-        }
-
-        #endregion
-
-        #region GetLatestActiveDiscount
-
-        public async Task<Discount> GetLatestActiveDiscountAsync(int? userId)
-        {
-            // ابتدا تمام تخفیف‌های فعال را دریافت می‌کنیم
-            var discounts = await GetAllActiveDiscountsWithoutCodeAsync();
+               
 
             // تخفیف‌های عمومی که برای همه کاربران هستند
-            var generalDiscounts = discounts
+            var generalDiscounts = activeDiscounts
                 .Where(d => d.IsGeneralForUsers)
                 .OrderByDescending(d => d.StartDate)
                 .ThenByDescending(d => d.DiscountPercentage)
-                .FirstOrDefault();
+                .ToList();
 
             // اگر کاربر لاگین کرده باشد
             if (userId.HasValue)
             {
                 // تخفیف‌های مرتبط با این کاربر را پیدا کنید
-                var userSpecificDiscounts = discounts
-                    .Where(d => d.UserDiscounts.Any(ud => ud.UserId == userId.Value))
+                var userSpecificDiscounts = activeDiscounts
+                    .Where(d => d.UserDiscounts != null && d.UserDiscounts.Any(ud => ud.UserId == userId.Value))
                     .OrderByDescending(d => d.StartDate)
                     .ThenByDescending(d => d.DiscountPercentage)
-                    .FirstOrDefault();
+                    .ToList();
 
-                // اگر تخفیف اختصاصی برای کاربر وجود داشت، آن را برگردانید
-                if (userSpecificDiscounts != null)
-                {
-                    return userSpecificDiscounts;
-                }
+                // حذف موارد تکراری و حفظ تخفیف اختصاصی در اولویت
+                var combinedDiscounts = userSpecificDiscounts
+                    .Concat(generalDiscounts)
+                    .GroupBy(d => d.Id)
+                    .Select(g => g.FirstOrDefault(d => d.UserDiscounts != null && d.UserDiscounts.Any(ud => ud.UserId == userId.Value)) ?? g.First())
+                    .ToList();
+
+                return combinedDiscounts;
             }
 
-            // اگر کاربر لاگین نکرده یا تخفیف اختصاصی نداشت، تخفیف عمومی را برگردانید
+
             return generalDiscounts;
         }
 
-        #endregion
 
         #endregion
     }

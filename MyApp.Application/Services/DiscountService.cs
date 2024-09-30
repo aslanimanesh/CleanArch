@@ -197,6 +197,7 @@ namespace MyApp.Application.Services
             await _usedUserDiscountRepository.AddAsync(newUserDiscount);
 
             return "تخفیف با موفقیت اعمال شد.";
+            
 
             #endregion
 
@@ -214,10 +215,10 @@ namespace MyApp.Application.Services
 
         #region GetLatestActiveDiscount
 
-        public async Task<Discount> GetLatestActiveDiscountAsync(int? userId)
-        {
-           return await _discountRepository.GetLatestActiveDiscountAsync(userId);
-        }
+        //public async Task<Discount> GetLatestActiveDiscountAsync(int? userId)
+        //{
+        //   return await _discountRepository.GetLatestActiveDiscountAsync(userId);
+        //}
 
         #endregion
 

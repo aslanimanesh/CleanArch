@@ -17,17 +17,9 @@ namespace MyApp.Domain.Interfaces
 
         #endregion
 
-        #region GetAllActiveDiscounts
+     
 
-        Task<IEnumerable<Discount>> GetAllActiveDiscountsWithoutCodeAsync();
-
-        #endregion
-
-        #region GetLatestActiveDiscount
-
-        Task<Discount> GetLatestActiveDiscountAsync(int? userId);
-
-        #endregion
+        Task<IEnumerable<Discount>> GetAllActiveDiscountsWithoutCodeForUserAsync(int? userId);
 
     }
 }

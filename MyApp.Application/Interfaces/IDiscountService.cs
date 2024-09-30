@@ -19,7 +19,7 @@ namespace MyApp.Application.Interfaces
 
         #region GetLatestActiveDiscount
 
-        Task<Discount> GetLatestActiveDiscountAsync(int? userId);
+//Task<Discount> GetLatestActiveDiscountAsync(int? userId);
 
         #endregion
 

@@ -1,7 +1,6 @@
 ﻿@model IEnumerable<MyApp.Domain.ViewModels.Orders.ShowOrderViewModel>
 
 @{
-
     ViewData["Title"] = "سبد خرید";
     int row = 1;
 }
@@ -16,7 +15,6 @@
 }
 
 <table class="table table-bordered">
-
     <tr>
         <th>#</th>
         <th>تصویر</th>
@@ -26,6 +24,7 @@
         <th>جمع</th>
         <th></th>
     </tr>
+
     @foreach (var item in Model)
     {
         <tr>
@@ -36,7 +35,7 @@
             <td>@item.Title</td>
             <td>@item.Count</td>
             <td>@item.Price.ToString("N0", new System.Globalization.CultureInfo("fa-IR")) <span class="currency">تومان</span></td>
-                <td>@item.Sum.ToString("N0", new System.Globalization.CultureInfo("fa-IR")) <span class="currency">تومان</span></td>
+            <td>@item.Sum.ToString("N0", new System.Globalization.CultureInfo("fa-IR")) <span class="currency">تومان</span></td>
             <td>
                 <a class="btn btn-sm btn-success" href="/Order/Command/@item.OrderDetailId?command=up">+</a>
                 <a class="btn btn-sm btn-warning" href="/Order/Command/@item.OrderDetailId?command=down">-</a>
@@ -55,8 +54,17 @@
             <form asp-controller="Discount" asp-action="UseDiscount" method="post">
                 <input type="hidden" name="orderId" value="@ViewBag.OrderId" />
                 <input type="hidden" name="userId" value="@ViewBag.UserId" />
-                <input type="text" name="discountCode" class="form-control" @(TempData["DiscountResult"] != null ? "disabled" : "") />
-                <input type="submit" class="btn btn-primary btn-block" style="margin-top: 5px" value="اعمال" @(TempData["DiscountResult"] != null ? "disabled" : "") />
+
+                @if (TempData["IsDiscountApplied"] != null && (bool)TempData["IsDiscountApplied"])
+                {
+                    <div class="alert alert-success">تخفیف اعمال شد</div>
+                    <!-- دکمه تخفیف را نشان نمی‌دهیم -->
+                }
+                else
+                {
+                    <input type="text" name="discountCode" class="form-control" />
+                    <input type="submit" class="btn btn-primary btn-block" style="margin-top: 5px" value="اعمال" />
+                }
             </form>
         </td>
         <td colspan="1">جمع کل : </td>
@@ -84,7 +92,6 @@
         </td>
     </tr>
 </table>
-
 
 @section Scripts {
     @{

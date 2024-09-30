@@ -8,11 +8,12 @@ namespace MyApp.Application.Interfaces
 
         #region GetDiscountedProducts
 
-        Task<IEnumerable<ProductViewModel>> GetDiscountedProductsAsync();
+        //<IEnumerable<ProductViewModel>> GetDiscountedProductsAsync();
 
         #endregion
 
         #region GetDiscountedProductsByUserStatus
+
         Task<IEnumerable<ProductViewModel>> GetDiscountedProductsByUserStatusAsync(int? userId);
 
         #endregion
