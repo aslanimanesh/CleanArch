@@ -1,59 +1,54 @@
-﻿using System;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using MyApp.Domain.Interfaces;
 
-// این کلاس برای پاک‌سازی سفارش‌های قدیمی طراحی شده است و از BackgroundService ارث می‌برد
+// This class is designed to clean up old orders and inherits from BackgroundService
 public class OrderCleanupService : BackgroundService
 {
-    private readonly IServiceProvider _serviceProvider; // سرویس ارائه‌دهنده برای دریافت سایر سرویس‌ها
-    private readonly ILogger<OrderCleanupService> _logger; // لاگر برای ثبت لاگ‌ها
+    private readonly IServiceProvider _serviceProvider; // Service provider to access other services
+    private readonly ILogger<OrderCleanupService> _logger; // Logger to log information
 
-    // سازنده که IServiceProvider و ILogger را به کلاس تزریق می‌کند
+    // Constructor that injects IServiceProvider and ILogger into the class
     public OrderCleanupService(IServiceProvider serviceProvider, ILogger<OrderCleanupService> logger)
     {
         _serviceProvider = serviceProvider;
         _logger = logger;
     }
 
-    // متد ExecuteAsync که در آن منطق اصلی سرویس پیاده‌سازی می‌شود
+    // The ExecuteAsync method where the core logic of the service is implemented
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        while (!stoppingToken.IsCancellationRequested) // تا زمانی که درخواست لغو نشده باشد
+        while (!stoppingToken.IsCancellationRequested) // While cancellation has not been requested
         {
-            using (var scope = _serviceProvider.CreateScope()) // ایجاد یک محدوده برای استفاده از Scoped Services
+            using (var scope = _serviceProvider.CreateScope()) // Create a scope to use Scoped Services
             {
-                var orderRepository = scope.ServiceProvider.GetRequiredService<IOrderRepository>(); // دریافت ریپوزیتوری سفارش
-                await CleanupOrdersAsync(orderRepository); // فراخوانی متد برای پاک‌سازی سفارش‌ها
+                var orderRepository = scope.ServiceProvider.GetRequiredService<IOrderRepository>(); // Retrieve the order repository
+                await CleanupOrdersAsync(orderRepository); // Call the method to clean up orders
             }
 
-            await Task.Delay(TimeSpan.FromHours(1), stoppingToken); // انتظار یک ساعت قبل از اجرای مجدد
+            await Task.Delay(TimeSpan.FromHours(1), stoppingToken); // Wait for one hour before executing again
         }
     }
 
-    // متد CleanupOrdersAsync برای بررسی و حذف سفارش‌های قدیمی
+    // CleanupOrdersAsync method to check and delete old orders
     private async Task CleanupOrdersAsync(IOrderRepository orderRepository)
     {
-        // دریافت تمامی سفارش‌ها از ریپوزیتوری
+        // Retrieve all orders from the repository
         var ordersToDelete = await orderRepository.GetAllAsync();
 
-        // بررسی هر سفارش
+        // Check each order
         foreach (var order in ordersToDelete)
         {
-            // اگر سفارش هنوز نهایی نشده باشد و بیش از 48 ساعت از زمان ایجاد آن گذشته باشد
-            if (!order.IsFinaly && (DateTime.Now - order.CreateDate).TotalMinutes > 1)
+            // If the order is not finalized and more than 48 hours have passed since its creation
+            if (!order.IsFinaly && (DateTime.Now - order.CreateDate).TotalMinutes > 60) // Adjust for testing
             {
-                // ثبت لاگ برای حذف سفارش
+                // Log the deletion of the order
                 _logger.LogInformation($"Deleting order with ID: {order.Id} - Status: {order.IsFinaly}");
 
-                // حذف سفارش از دیتابیس با استفاده از شیء Order
-                await orderRepository.DeleteAsync(order); // تغییر به حذف بر اساس شیء به‌جای ID
+                // Delete the order from the database using the Order object
+                await orderRepository.DeleteAsync(order); // Changed to delete by object instead of ID
             }
         }
     }
-
 }

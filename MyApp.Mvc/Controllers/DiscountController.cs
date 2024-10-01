@@ -31,6 +31,12 @@ namespace MyApp.Mvc.Controllers
             // Show the result message to the user
             TempData["DiscountResult"] = resultMessage;
 
+            if (resultMessage == "Success")
+            {
+                TempData["IsDiscountApplied"] = true;
+                TempData["DiscountResult"] = "تخفیف با موفقیت اعمال شد";           
+            }    
+
             return RedirectToAction("ShowOrder", "Order"); // Redirect to show the order
         }
 

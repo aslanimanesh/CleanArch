@@ -107,75 +107,131 @@ namespace MyApp.Application.Services
 
             await ResetDiscountedPricesInOrderAsync(orderId);
 
+            #region Calculate Discount
+
+            //decimal discountAmount = 0;
+
+            //// 1. Discount applies to the entire order for all users and all products
+            //if (discount.IsGeneralForProducts && discount.IsGeneralForUsers)
+            //{
+            //    // The discount is applied to the total order amount
+            //    discountAmount = order.Sum * (discount.DiscountPercentage / 100m);
+            //}
+            //// 2. Discount applies to all products but for specific users
+            //else if (discount.IsGeneralForProducts && !discount.IsGeneralForUsers)
+            //{
+            //    // Check if the specific user is eligible for the discount
+            //    if (discount.UserDiscounts.Any(ud => ud.UserId == userId))
+            //    {
+            //        discountAmount = order.Sum * (discount.DiscountPercentage / 100m);
+            //    }
+            //    else
+            //    {
+            //        return "You are not authorized to use this discount code.";
+            //    }
+            //}
+            //// 3. Discount applies to all users but for specific products
+            //else if (!discount.IsGeneralForProducts && discount.IsGeneralForUsers)
+            //{
+            //    // Check if the discount applies to specific products
+            //    bool hasValidProducts = false; // To track if a valid product is found
+
+            //    foreach (var orderItem in order.OrderDetails)
+            //    {
+            //        if (discount.ProductDiscounts.Any(pd => pd.ProductId == orderItem.ProductId))
+            //        {
+            //            hasValidProducts = true; // Set to true if a valid product is found
+            //            discountAmount += orderItem.OriginalPrice * orderItem.Quantity * (discount.DiscountPercentage / 100m);
+            //        }
+            //    }
+
+            //    // Check if no valid products were found
+            //    if (!hasValidProducts)
+            //    {
+            //        return "The items in your cart are not eligible for this discount code.";
+            //    }
+            //}
+            //// 4. Discount applies to specific users and specific products
+            //else if (!discount.IsGeneralForProducts && !discount.IsGeneralForUsers)
+            //{
+            //    // Check if both the user and products are eligible for the discount
+            //    if (discount.UserDiscounts.Any(ud => ud.UserId == userId))
+            //    {
+            //        foreach (var orderItem in order.OrderDetails)
+            //        {
+            //            if (discount.ProductDiscounts.Any(pd => pd.ProductId == orderItem.ProductId))
+            //            {
+            //                discountAmount += orderItem.Quantity * orderItem.OriginalPrice * (discount.DiscountPercentage / 100m);
+            //            }
+            //        }
+            //    }
+            //    else
+            //    {
+            //        return "This discount code does not belong to you.";
+            //    }
+            //}
+
+            #endregion
 
             #region Calculate Discount
 
             decimal discountAmount = 0;
 
-            // 1. تخفیف به کل سفارش برای همه کاربران و همه محصولات
-            if (discount.IsGeneralForProducts && discount.IsGeneralForUsers)
+            // Apply discount logic based on product and user eligibility
+            foreach (var orderItem in order.OrderDetails)
             {
-                // تخفیف برای کل مبلغ سفارش اعمال می‌شود
-                discountAmount = order.Sum * (discount.DiscountPercentage / 100m);
-            }
-            // 2. تخفیف برای همه محصولات ولی کاربران خاص
-            else if (discount.IsGeneralForProducts && !discount.IsGeneralForUsers)
-            {
-                // بررسی اینکه کاربر خاص مجاز به استفاده از تخفیف باشد
-                if (discount.UserDiscounts.Any(ud => ud.UserId == userId))
-                {
-                    discountAmount = order.Sum * (discount.DiscountPercentage / 100m);
-                }
-                else
-                {
-                    return "شما مجاز به استفاده از این کد تخفیف نمی باشید";
-                }
-            }
-            // 3. تخفیف برای همه کاربران ولی محصولات خاص
-            else if (!discount.IsGeneralForProducts && discount.IsGeneralForUsers)
-            {
-                // بررسی اینکه تخفیف برای محصولات خاصی اعمال شود
-                bool hasValidProducts = false; // برای پیگیری اینکه آیا محصول معتبر وجود دارد یا نه
+                decimal itemDiscountAmount = 0;
 
-                foreach (var orderItem in order.OrderDetails)
+                // 1. Discount applies to the entire order for all users and all products
+                if (discount.IsGeneralForProducts && discount.IsGeneralForUsers)
+                {
+                    itemDiscountAmount = orderItem.OriginalPrice * orderItem.Quantity * (discount.DiscountPercentage / 100m);
+                }
+                // 2. Discount applies to all products but for specific users
+                else if (discount.IsGeneralForProducts && !discount.IsGeneralForUsers)
+                {
+                    if (discount.UserDiscounts.Any(ud => ud.UserId == userId))
+                    {
+                        itemDiscountAmount = orderItem.OriginalPrice * orderItem.Quantity * (discount.DiscountPercentage / 100m);
+                    }
+                    else
+                    {
+                        return "You are not authorized to use this discount code.";
+                    }
+                }
+                // 3. Discount applies to all users but for specific products
+                else if (!discount.IsGeneralForProducts && discount.IsGeneralForUsers)
                 {
                     if (discount.ProductDiscounts.Any(pd => pd.ProductId == orderItem.ProductId))
                     {
-                        hasValidProducts = true; // اگر محصول معتبر پیدا شد، مقدار true می‌شود
-                        discountAmount += orderItem.OriginalPrice * orderItem.Quantity * (discount.DiscountPercentage / 100m);
+                        itemDiscountAmount = orderItem.OriginalPrice * orderItem.Quantity * (discount.DiscountPercentage / 100m);
                     }
                 }
-
-                // بررسی اینکه آیا هیچ محصول معتبری پیدا نشد
-                if (!hasValidProducts)
+                // 4. Discount applies to specific users and specific products
+                else if (!discount.IsGeneralForProducts && !discount.IsGeneralForUsers)
                 {
-                    return "محصولات سبد خرید شما شامل این کد تخفیف نمی شوند";
-                }
-            }
-            // 4. تخفیف برای کاربران خاص و محصولات خاص
-            else if (!discount.IsGeneralForProducts && !discount.IsGeneralForUsers)
-            {
-                // بررسی اینکه کاربر و محصول مجاز به استفاده از تخفیف باشند
-                if (discount.UserDiscounts.Any(ud => ud.UserId == userId))
-                {
-                    foreach (var orderItem in order.OrderDetails)
+                    if (discount.UserDiscounts.Any(ud => ud.UserId == userId) && discount.ProductDiscounts.Any(pd => pd.ProductId == orderItem.ProductId))
                     {
-                        if (discount.ProductDiscounts.Any(pd => pd.ProductId == orderItem.ProductId))
-                        {
-                            discountAmount += orderItem.Quantity * orderItem.OriginalPrice * (discount.DiscountPercentage / 100m);
-                        }
+                        itemDiscountAmount = orderItem.OriginalPrice * orderItem.Quantity * (discount.DiscountPercentage / 100m);
                     }
                 }
-                else
+
+                // Update order item details
+                if (itemDiscountAmount > 0)
                 {
-                    return "این کد تخفیف متعلق به شما نمی باشد";
+                    discountAmount += itemDiscountAmount;
+
+                    // Update final price and discount percentage for the order item
+                    orderItem.FinalPrice = orderItem.OriginalPrice - (orderItem.OriginalPrice * (discount.DiscountPercentage / 100m));
+                    orderItem.DiscountPercentage = discount.DiscountPercentage;
+
+                    // Save changes to order item in the database
+                    await _orderDetailsService.UpdateAsync(orderItem);
                 }
             }
-
-            // محاسبه نهایی مبلغ سفارش با تخفیف
-            //var sumWithDiscount = order.Sum - discountAmount;
 
             #endregion
+
 
             #region Apply Discount
             order.Sum = order.Sum - discountAmount;
@@ -188,11 +244,20 @@ namespace MyApp.Application.Services
             {
                 discount.UsableCount -= 1;
             }
-            discount.UsedCount += 1;
+
+            if (discount.UsedCount == null)
+            {
+                discount.UsedCount = 1;
+            }
+            else
+            {
+                discount.UsedCount += 1;
+            }
+            
 
             await _discountRepository.UpdateAsync(discount);
 
-            // ذخیره اطلاعات تخفیف استفاده‌شده توسط کاربر
+            // Save Information User 
             var newUserDiscount = new UsedUserDiscount
             {
                 UserId = userId,
@@ -202,7 +267,7 @@ namespace MyApp.Application.Services
             };
             await _usedUserDiscountRepository.AddAsync(newUserDiscount);
 
-            return "تخفیف با موفقیت اعمال شد.";
+            return "Success";
             
 
             #endregion
@@ -223,34 +288,34 @@ namespace MyApp.Application.Services
         #endregion
 
 
+        #region Private Method
         private async Task ResetDiscountedPricesInOrderAsync(int orderId)
         {
             var order = await _orderRepository.GetOrderWithDetailsAsync(orderId);
-            if (order == null) return; // اگر سفارش یافت نشد، متد را ترک کن
+            if (order == null) return; // Exit the method if the order is not found
 
-            decimal newTotalSum = 0; // متغیر برای نگهداری مجموع جدید سفارش
+            decimal newTotalSum = 0; // Variable to store the new total sum of the order
 
-            // بررسی و به‌روزرسانی قیمت نهایی محصولات
+            // Check and update the final prices of products
             foreach (var orderDetail in order.OrderDetails)
             {
                 if (orderDetail.DiscountPercentage > 0)
                 {
-                    // اگر درصد تخفیف بزرگتر از 0 باشد، قیمت نهایی را به قیمت اصلی برگردان
+                    // If the discount percentage is greater than 0, revert the final price to the original price
                     orderDetail.FinalPrice = orderDetail.OriginalPrice;
-                    await _orderDetailsService.UpdateAsync(orderDetail); // به‌روزرسانی جزئیات سفارش در پایگاه داده
+                    await _orderDetailsService.UpdateAsync(orderDetail); // Update the order details in the database
                 }
 
-                // محاسبه مجموع جدید با استفاده از قیمت نهایی به‌روز شده
+                // Calculate the new total sum using the updated final price
                 newTotalSum += Convert.ToDecimal(orderDetail.FinalPrice) * Convert.ToDecimal(orderDetail.Quantity);
             }
 
-            // به‌روزرسانی مجموع سفارش
+            // Update the order total sum
             order.Sum = newTotalSum;
-            await _orderRepository.UpdateAsync(order); // به‌روزرسانی سفارش در پایگاه داده
+            await _orderRepository.UpdateAsync(order); // Update the order in the database
         }
 
-
-
+        #endregion
 
 
     }

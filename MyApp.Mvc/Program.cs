@@ -44,7 +44,7 @@ builder.Services.AddAuthentication(options =>
 
 #endregion
 
-builder.Services.AddHostedService<OrderCleanupService>(); // ثبت سرویس پاک‌سازی سفارش
+builder.Services.AddHostedService<OrderCleanupService>(); 
 
 
 builder.Services.AddControllersWithViews();
